@@ -11,7 +11,7 @@ export function generateServerName(options: GeneratorOptions): string {
 
     // Get random words from each category
     const getRandomWord = (array: string[]) => array[Math.floor(Math.random() * array.length)];
-    
+
     // Determine name structure
     const nameComponents: string[] = [];
     const roll = Math.random();
@@ -57,7 +57,7 @@ export function generateEncryptionKey(length: number = 32): string {
         numbers: '0123456789',
         specialChars: '!@#$%^&*()_+-=[]{}|;:,.<>?',
         hexChars: 'ABCDEF0123456789',
-        base64Chars: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
+        base64Chars: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+'
     };
 
     // Entropy collection function
@@ -73,7 +73,7 @@ export function generateEncryptionKey(length: number = 32): string {
             document.documentElement.scrollTop,
             new Date().getTimezoneOffset()
         ];
-        
+
         return values.reduce((acc, val) => acc ^ (val >>> 0), 0).toString(16);
     };
 
@@ -89,11 +89,11 @@ export function generateEncryptionKey(length: number = 32): string {
         // Ensure key starts with hex pattern
         () => charset.hexChars[Math.floor(Math.random() * charset.hexChars.length)],
         // Add uppercase + number pattern
-        () => charset.uppercase[Math.floor(Math.random() * charset.uppercase.length)] + 
-             charset.numbers[Math.floor(Math.random() * charset.numbers.length)],
+        () => charset.uppercase[Math.floor(Math.random() * charset.uppercase.length)] +
+            charset.numbers[Math.floor(Math.random() * charset.numbers.length)],
         // Add special char + lowercase pattern
         () => charset.specialChars[Math.floor(Math.random() * charset.specialChars.length)] +
-             charset.lowercase[Math.floor(Math.random() * charset.lowercase.length)],
+            charset.lowercase[Math.floor(Math.random() * charset.lowercase.length)],
         // Add base64 pattern
         () => charset.base64Chars[Math.floor(Math.random() * charset.base64Chars.length)]
     ];
@@ -103,7 +103,7 @@ export function generateEncryptionKey(length: number = 32): string {
         // Apply a random pattern
         const pattern = patterns[Math.floor(Math.random() * patterns.length)];
         let segment = pattern();
-        
+
         // Mix in entropy
         const entropyByte = entropyPool[key.length % entropyPool.length];
         segment = segment.split('')
