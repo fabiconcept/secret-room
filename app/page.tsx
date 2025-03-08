@@ -1,9 +1,9 @@
-import CreateServerForm from "./components/Home/Form";
+import AnimatedLoginForm from "./components/Home/Form";
 
 export default function HomePage() {
   return (
-    <main className="min-h-screen relative z-20 grid place-items-center">
-      <CreateServerForm />
+    <main className="min-h-screen py-10 px-3 relative z-20 grid place-items-center">
+      <AnimatedLoginForm />
     </main>
   );
 }

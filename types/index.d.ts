@@ -9,3 +9,16 @@ declare enum STORAGE_KEYS {
     CURRENT_SERVER_ID = 'current_server_id',
     APP_SETTINGS = 'app_settings',
 }
+
+declare interface GeneratorOptions {
+    includeLocation?: boolean;
+    includeSuffix?: boolean;
+    maxLength: number;
+    separator?: string;
+}
+declare type WordCategory = {
+    adjectives: string[];
+    nouns: string[];
+    locations: string[];
+    suffixes: string[];
+};
