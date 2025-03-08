@@ -13,6 +13,7 @@ interface InputWithShuffleProps {
     className?: string;
     onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
     hint?: React.ReactNode;
+    disabled?: boolean;
 }
 
 export const InputWithShuffle: React.FC<InputWithShuffleProps> = ({
@@ -24,6 +25,7 @@ export const InputWithShuffle: React.FC<InputWithShuffleProps> = ({
     placeholder,
     className = '',
     onKeyDown,
+    disabled,
     hint
 }) => {
     return (
@@ -38,6 +40,7 @@ export const InputWithShuffle: React.FC<InputWithShuffleProps> = ({
                     onChange={(e) => onChange(e.target.value)}
                     onKeyDown={onKeyDown}
                     placeholder={placeholder}
+                    disabled={disabled}
                     className={`w-full bg-[#2b2b2b] mt-2 text-gray-200 p-3 rounded-lg border border-gray-700 focus:border-gray-500 focus:outline-none transition-colors ${className}`}
                 />
                 <button

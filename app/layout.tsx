@@ -4,6 +4,7 @@ import "./styles/globals.css";
 import { SocketProvider } from "@/app/contexts/SocketContext";
 import HomeBackground from "./components/HomeBackground";
 import SoundTrack from "./components/SoundTrack";
+import { Toaster } from "react-hot-toast";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,6 +31,13 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <Toaster
+          position="top-center"
+          toastOptions={{
+            duration: 5000,
+          }}
+
+        />
         <div className="bg absolute h-screen w-screen top-0 left-0"></div>
         <HomeBackground />
         <SoundTrack />
