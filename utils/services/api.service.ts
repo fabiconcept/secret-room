@@ -1,4 +1,4 @@
-import { CreateServerRequest, ServerResponse, ApiResponse } from '../types/server.types';
+import { CreateServerRequest, ServerResponse, CreateServerResponse } from "@/app/types/server.types";
 
 class ApiService {
     private static instance: ApiService;
@@ -30,7 +30,7 @@ class ApiService {
         return response.json();
     }
 
-    public async createServer(request: CreateServerRequest): Promise<ApiResponse<ServerResponse>> {
+    public async createServer(request: CreateServerRequest): Promise<CreateServerResponse<ServerResponse>> {
         try {
             if (!this.baseUrl) throw new Error("Missing baseUrl Variable!");
 
@@ -40,7 +40,25 @@ class ApiService {
                 body: JSON.stringify(request)
             });
 
-            return this.handleResponse<ApiResponse<ServerResponse>>(response);
+            return this.handleResponse<CreateServerResponse<ServerResponse>>(response);
+        } catch (error) {
+            console.error('API Error:', error);
+            throw this.handleError(error);
+        }
+    }
+
+    public async getServer(serverId: string): Promise<CreateServerResponse<ServerResponse>> {
+        try {
+            if (!this.baseUrl) throw new Error("Missing baseUrl Variable!");
+
+            const response = await fetch(`${this.baseUrl}/server/${serverId}`, {
+                method: 'GET',
+                headers: {
+                    ...this.getHeaders(),
+                }
+            });
+
+            return this.handleResponse<CreateServerResponse<ServerResponse>>(response);
         } catch (error) {
             console.error('API Error:', error);
             throw this.handleError(error);

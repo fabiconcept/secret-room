@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useEffect } from 'react';
-import { socket, initializeSocket, disconnectSocket } from '../../utils/socket';
+import { socket, initializeSocket, disconnectSocket } from '../../../utils/socket';
 import type { Socket } from 'socket.io-client';
 
 interface SocketContextType {
