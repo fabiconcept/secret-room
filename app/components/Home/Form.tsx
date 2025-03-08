@@ -8,6 +8,7 @@ import Button from './Button';
 import clsx from 'clsx';
 import { apiService } from '@/app/services/api.service';
 import { CreateServerRequest } from '@/app/types/server.types';
+import toast from 'react-hot-toast';
 
 interface FormState {
     isLoading: boolean;
@@ -55,6 +56,10 @@ export default function Form() {
     }, []);
 
     useEffect(() => {
+        generateNewKey();
+    }, [generateNewKey]);
+
+    useEffect(() => {
         if (serverName !== "") return;
         setPlaceholderName(generateServerName({
             maxLength: 32,
@@ -78,7 +83,7 @@ export default function Form() {
 
     const canProceed = serverName.trim() && encryptionKey.trim() && !state.isLoading;
 
-    const handleSubmit = async () => {
+    const createServer = async () => {
         if (!canProceed || state.isLoading) return;
 
         setState(prev => ({ ...prev, isLoading: true, error: null }));
@@ -90,8 +95,7 @@ export default function Form() {
                 lifeSpan: lifespan * 60 * 1000 // Convert minutes to milliseconds
             };
 
-            const response = await apiService.createServer(request);
-
+            await apiService.createServer(request);
         } catch (error) {
             console.error('Error creating server:', error);
             setState(prev => ({
@@ -99,8 +103,19 @@ export default function Form() {
                 error: error instanceof Error ? error.message : 'An error occurred'
             }));
             setState(prev => ({ ...prev, isLoading: false }));
+
+            throw new Error("Failed to create server");
         }
     };
+
+    const handleSubmit = () => {
+        const promise = createServer();
+        toast.promise(promise, {
+            loading: 'Initializing secure server...',
+            success: 'Server created successfully! Redirecting to secure room...',
+            error: `Failed to create server`
+        });
+    }
 
     return (
         <div className='rounded-2xl bg-[#1a1a1a] p-8 sm:w-md w-full'>
@@ -135,6 +150,7 @@ export default function Form() {
                     value={encryptionKey}
                     onChange={setEncryptionKey}
                     onShuffle={generateNewKey}
+                    disabled
                     placeholder="Click generate to create a secure key"
                     className="font-mono text-sm"
                     hint={encryptionKeyHint}
