@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./styles/globals.css";
-import { SocketProvider } from "@/app/contexts/SocketContext";
+import { SocketProvider } from "@/app/components/contexts/SocketContext";
 import HomeBackground from "./components/HomeBackground";
 import SoundTrack from "./components/SoundTrack";
 import { Toaster } from "react-hot-toast";
