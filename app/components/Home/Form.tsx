@@ -6,9 +6,11 @@ import { InputWithShuffle } from './InputWithShuffle';
 import { LifespanSlider } from './LifespanSlider';
 import Button from './Button';
 import clsx from 'clsx';
-import { apiService } from '@/app/services/api.service';
+import { apiService } from '@/utils/services/api.service';
 import { CreateServerRequest } from '@/app/types/server.types';
 import toast from 'react-hot-toast';
+import { setItem } from '@/utils/localStorage';
+import { useRouter } from 'next/navigation';
 
 interface FormState {
     isLoading: boolean;
@@ -26,6 +28,8 @@ export default function Form() {
     const [encryptionKey, setEncryptionKey] = useState('');
     const [lifespan, setLifespan] = useState(60); // Default 1 hour
     const [state, setState] = useState<FormState>(initialState);
+
+    const router = useRouter();
 
     const handleGenerateNewServerName = useCallback(() => {
         if (state.isLoading) return;
@@ -95,7 +99,12 @@ export default function Form() {
                 lifeSpan: lifespan * 60 * 1000 // Convert minutes to milliseconds
             };
 
-            await apiService.createServer(request);
+            const response = await apiService.createServer(request);
+
+            const { data, user, token } = response;
+
+            setItem(data.server_id, { ...user, token });
+            router.push(`/${data.server_id}`);
         } catch (error) {
             console.error('Error creating server:', error);
             setState(prev => ({

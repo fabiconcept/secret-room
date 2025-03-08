@@ -13,7 +13,7 @@ export const setItem = (key: string, value: any): void => {
     localStorage.setItem(key, JSON.stringify(value));
 };
 
-export const getItem = <T>(key: string, fallback: T): T => {
+export const getItem = <T>(key: string, fallback: T ): T => {
     const data = localStorage.getItem(key);
     return safeJSONParse(data, fallback);
 };
