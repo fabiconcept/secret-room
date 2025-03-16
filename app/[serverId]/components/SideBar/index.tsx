@@ -10,9 +10,9 @@ interface UserCardProps {
 }
 
 const UserCard = ({ username, isOnline, lastSeen }: UserCardProps) => (
-    <div className="flex items-center gap-3 p-4 hover:bg-white/5 transition-colors">
+    <div className="flex items-center gap-3 p-2 hover:bg-white/5 transition-colors cursor-pointer">
         <div className="relative">
-            <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
+            <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center">
                 {username[0].toUpperCase()}
             </div>
             <div className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-black/20 ${isOnline ? 'bg-green-500' : 'bg-gray-500'}`} />
@@ -35,12 +35,13 @@ export default function SideBar() {
 
     return (
         <section className="flex flex-col w-[clamp(20rem,100%,25rem)] h-full bg-black/20 border-r border-b border-white/10">
-            <header className={"w-full p-10 text-center text-white text-xl font-semibold bg-black/5 backdrop-blur-[2px]"}>
-                <span className="glitch" data-text={`${server?.server_name} Server`}>{server?.server_name} Server</span>
+            <header className={"w-full p-10 text-center text-white border-b border-gray-500/20 text-xl font-semibold bg-black/5 backdrop-blur-[2px]"}>
+                <span className="glitch" data-text={`${server?.server_name}`}>{server?.server_name}</span>
             </header>
             <div className="flex-1 w-full overflow-y-auto">
                 <div className="p-4">
-                    <h2 className="text-white/50 text-sm font-medium mb-2">USERS — {activeUsers.length}</h2>
+                    {isOwner && <h2 className="text-gray-500 text-sm font-medium mb-2">Connected Users <span className="opacity-50">({activeUsers.length})</span></h2>}
+
                     <div className="space-y-1">
                         {activeUsers.map((user) => {
                             if (isOwner) {

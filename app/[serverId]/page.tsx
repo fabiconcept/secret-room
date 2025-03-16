@@ -79,7 +79,7 @@ export default function Page() {
 
     return (
         <ServerProvider server={server}>
-            <div className="h-screen w-screen p-5">
+            <div className="h-screen w-screen">
                 <ChatSection />
             </div>
         </ServerProvider>
