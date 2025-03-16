@@ -129,3 +129,42 @@ export function generateEncryptionKey(length: number = 32): string {
         .join('')
         .slice(0, length);
 }
+
+export async function getUniqueFingerprint() {
+    const props = [];
+
+    // Screen Resolution + DPR
+    props.push(`Screen:${window.screen.width}x${window.screen.height}`);
+    props.push(`DPR:${window.devicePixelRatio}`);
+
+    // Timezone Offset
+    props.push(`Timezone:${new Date().getTimezoneOffset()}`);
+
+    // Operating System
+    props.push(`OS:${navigator.platform}`);
+
+    // Audio Devices
+    try {
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const audioDevices = devices.filter(device => device.kind === "audioinput").length;
+        props.push(`AudioDevices:${audioDevices}`);
+    } catch (e) {
+        props.push(`AudioDevices:Unknown`);
+    }
+
+    // Language Preference
+    props.push(`Lang:${navigator.language}`);
+
+    // Generate a hash from the collected properties
+    return hashString(props.join("|"));
+}
+
+async function hashString(str: string) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(str);
+    const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+    return Array.from(new Uint8Array(hashBuffer))
+        .map(byte => byte.toString(16).padStart(2, "0"))
+        .join("");
+}
+

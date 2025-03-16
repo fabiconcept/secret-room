@@ -9,9 +9,10 @@ interface TypeWriterProps {
     className?: string;
     speed?: number;
     onComplete?: () => void;
+    shouldRedirect?: boolean
 }
 
-export default function TypeWriter({ text, className = '', speed = 50, onComplete }: TypeWriterProps) {
+export default function TypeWriter({ text, className = '', speed = 50, onComplete, shouldRedirect = true }: TypeWriterProps) {
     const router = useRouter();
     const [displayText, setDisplayText] = useState('');
     const [currentLine, setCurrentLine] = useState(0);
@@ -51,6 +52,7 @@ export default function TypeWriter({ text, className = '', speed = 50, onComplet
 
     useEffect(() => {
         if (isTyping) return;
+        if (!shouldRedirect) return;
 
         const redirectToSafety = setTimeout(() => {
             toast.custom("Redirecting to safety...");

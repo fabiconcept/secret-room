@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { generateServerName, generateEncryptionKey } from '@/utils';
+import { generateServerName, generateEncryptionKey, getUniqueFingerprint } from '@/utils';
 import { InputWithShuffle } from './InputWithShuffle';
 import { LifespanSlider } from './LifespanSlider';
 import Button from './Button';
@@ -93,10 +93,13 @@ export default function Form() {
         setState(prev => ({ ...prev, isLoading: true, error: null }));
 
         try {
+            const fingerprint = await getUniqueFingerprint();
+
             const request: CreateServerRequest = {
                 serverName: serverName.trim(),
                 encryptionKey: encryptionKey.trim(),
-                lifeSpan: lifespan * 60 * 1000 // Convert minutes to milliseconds
+                lifeSpan: lifespan * 60 * 1000,
+                fingerprint
             };
 
             const response = await apiService.createServer(request);

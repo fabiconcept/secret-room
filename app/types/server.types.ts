@@ -2,6 +2,7 @@ export interface CreateServerRequest {
     serverName: string;
     encryptionKey: string;
     lifeSpan: number;
+    fingerprint: string;
 }
 
 export interface ServerResponse {
@@ -17,11 +18,29 @@ export interface ApiResponse<T> {
     data: T;
 }
 
-
 export interface CreateServerResponse<T> extends ApiResponse<T> {
     user: {
         userId: string,
         username: string
     },
     token: string
+}
+
+export interface InviteServerResponse<T> extends ApiResponse<T> {
+    user: {
+        userId: string,
+        username: string
+    },
+    token: string
+}
+
+export interface ServerUser {
+    userId: string;
+    username: string;
+}
+
+export interface ServerInviteData {
+    serverId: string;
+    serverName: string;
+    expiresAt: string;
 }

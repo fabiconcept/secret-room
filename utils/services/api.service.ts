@@ -1,4 +1,4 @@
-import { CreateServerRequest, ServerResponse, CreateServerResponse } from "@/app/types/server.types";
+import { InviteServerResponse, ApiResponse, CreateServerRequest, ServerResponse, CreateServerResponse, ServerUser, ServerInviteData } from "@/app/types/server.types";
 
 class ApiService {
     private static instance: ApiService;
@@ -47,18 +47,59 @@ class ApiService {
         }
     }
 
-    public async getServer(serverId: string): Promise<CreateServerResponse<ServerResponse>> {
+    public async getServer(serverId: string, userId: string, token: string): Promise<ApiResponse<ServerResponse>> {
         try {
             if (!this.baseUrl) throw new Error("Missing baseUrl Variable!");
 
-            const response = await fetch(`${this.baseUrl}/server/${serverId}`, {
+            const response = await fetch(`${this.baseUrl}/server/${serverId}?userId=${userId}`, {
                 method: 'GET',
                 headers: {
                     ...this.getHeaders(),
+                    'Authorization': token
                 }
             });
 
-            return this.handleResponse<CreateServerResponse<ServerResponse>>(response);
+            return this.handleResponse<ApiResponse<ServerResponse>>(response);
+        } catch (error) {
+            console.error('API Error:', error);
+            throw this.handleError(error);
+        }
+    }
+
+    public async getServerActiveUsers(serverId: string, token: string): Promise<ApiResponse<ServerUser[]>> {
+        try {
+            if (!this.baseUrl) throw new Error("Missing baseUrl Variable!");
+
+            const response = await fetch(`${this.baseUrl}/server/${serverId}/active-users`, {
+                method: 'GET',
+                headers: {
+                    ...this.getHeaders(),
+                    'Authorization': token
+                }
+            });
+
+            return this.handleResponse<ApiResponse<ServerUser[]>>(response);
+        } catch (error) {
+            console.error('API Error:', error);
+            throw this.handleError(error);
+        }
+    }
+
+    public async getServerByInvitation(globalInvitationId: string, fingerprint: string = ""): Promise<InviteServerResponse<ServerInviteData>> {
+        try {
+            if (!this.baseUrl) throw new Error("Missing baseUrl Variable!");
+
+            const response = await fetch(`${this.baseUrl}/server/invitation/${globalInvitationId}`, {
+                method: 'POST',
+                headers: {
+                    ...this.getHeaders(),
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ fingerprint }),
+                cache: 'no-store' // For server-side rendering
+            });
+
+            return this.handleResponse<InviteServerResponse<ServerInviteData>>(response);
         } catch (error) {
             console.error('API Error:', error);
             throw this.handleError(error);
