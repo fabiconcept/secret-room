@@ -29,9 +29,9 @@ const UserCard = ({ username, isOnline, lastSeen }: UserCardProps) => (
 );
 
 export default function SideBar() {
-    const { server, activeUsers, isOwner } = useServerStore();
+    const { server, activeUsers, isOwner, } = useServerStore();
 
-    if (!isOwner) return null;
+    if (!server) return null;
 
     return (
         <section className="flex flex-col w-[clamp(20rem,100%,25rem)] h-full bg-black/20 border-r border-b border-white/10">
@@ -42,14 +42,24 @@ export default function SideBar() {
                 <div className="p-4">
                     <h2 className="text-white/50 text-sm font-medium mb-2">USERS — {activeUsers.length}</h2>
                     <div className="space-y-1">
-                        {activeUsers.map((user) => (
-                            <UserCard
+                        {activeUsers.map((user) => {
+                            if (isOwner) {
+                                return (<UserCard
+                                    key={user.userId}
+                                    username={user.username}
+                                    isOnline={user.isOnline}
+                                    lastSeen={user.lastSeen}
+                                />)
+                            }
+                            if (user.userId !== server.owner) return null;
+                            return (<UserCard
                                 key={user.userId}
                                 username={user.username}
                                 isOnline={user.isOnline}
                                 lastSeen={user.lastSeen}
-                            />
-                        ))}
+                            />)
+                        }
+                        )}
                     </div>
                 </div>
             </div>
