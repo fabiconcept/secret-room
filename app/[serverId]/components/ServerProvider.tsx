@@ -30,7 +30,7 @@ const ErrorDisplay = ({ error }: { error: string }) => (
 );
 
 export default function ServerProvider({ children, server }: ServerProviderProps) {
-    const { setServer, setUser, setError, setLoading, clearServer, setActiveUsers, error, isLoading, setIsOwner } = useServerStore();
+    const { setServer, setUser, setError, setLoading, clearServer, setActiveUsers, error, isLoading, setIsOwner, isOwner } = useServerStore();
     const { server_id } = server;
 
     useEffect(() => {
@@ -49,10 +49,10 @@ export default function ServerProvider({ children, server }: ServerProviderProps
                     redirect('/');
                 }
 
-                const { data: activeUsers } = await apiService.getServerActiveUsers(server.server_id, auth.token);
 
-                setActiveUsers(activeUsers.filter((user) => user.userId !== auth.userId));
-                setIsOwner(auth.userId === server.owner);
+                const isServerOwner = auth.userId === server.owner
+
+                setIsOwner(isServerOwner);
 
                 setServer(server);
                 setUser({
@@ -60,6 +60,11 @@ export default function ServerProvider({ children, server }: ServerProviderProps
                     username: auth.username,
                     token: auth.token
                 });
+
+                if (isServerOwner) {
+                    const { data: activeUsers } = await apiService.getServerActiveUsers(server.server_id, auth.token);
+                    setActiveUsers(activeUsers.filter((user) => user.userId !== auth.userId));
+                }
 
                 // Initialize socket connection
                 socketService.connect(server_id, auth.token);

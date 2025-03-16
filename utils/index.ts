@@ -140,8 +140,36 @@ export async function getUniqueFingerprint() {
     // Timezone Offset
     props.push(`Timezone:${new Date().getTimezoneOffset()}`);
 
-    // Operating System
+    // Operating System and Browser Info
     props.push(`OS:${navigator.platform}`);
+    props.push(`UA:${navigator.userAgent}`);
+    props.push(`Engine:${navigator.product}`);
+
+    // Browser Capabilities
+    props.push(`Cookies:${navigator.cookieEnabled}`);
+    props.push(`DoNotTrack:${navigator.doNotTrack}`);
+    props.push(`MaxTouchPoints:${navigator.maxTouchPoints}`);
+    props.push(`HardwareConcurrency:${navigator.hardwareConcurrency}`);
+    props.push(`Memory:${(navigator as any).deviceMemory || 'Unknown'}`);
+
+    // Canvas Fingerprint
+    try {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+            ctx.textBaseline = 'top';
+            ctx.font = '14px Arial';
+            ctx.fillStyle = '#F60';
+            ctx.fillRect(125,1,62,20);
+            ctx.fillStyle = '#069';
+            ctx.fillText('Fingerprint', 2, 15);
+            ctx.fillStyle = 'rgba(102, 204, 0, 0.7)';
+            ctx.fillText('Fingerprint', 4, 17);
+            props.push(`Canvas:${canvas.toDataURL()}`);
+        }
+    } catch (e) {
+        props.push(`Canvas:NotSupported`);
+    }
 
     // Audio Devices
     try {
@@ -152,19 +180,40 @@ export async function getUniqueFingerprint() {
         props.push(`AudioDevices:Unknown`);
     }
 
+    // WebGL Info
+    try {
+        const canvas = document.createElement('canvas');
+        const gl = canvas.getContext('webgl') as WebGLRenderingContext | null;
+        if (gl) {
+            const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+            if (debugInfo) {
+                const vendor = gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL);
+                const renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
+                props.push(`GPU:${renderer}`);
+                props.push(`Vendor:${vendor}`);
+            }
+        }
+    } catch (e) {
+        props.push(`WebGL:NotSupported`);
+    }
+
     // Language Preference
     props.push(`Lang:${navigator.language}`);
+    props.push(`Languages:${navigator.languages?.join(',')}`);
+
+    // Color Depth
+    props.push(`ColorDepth:${window.screen.colorDepth}`);
+    props.push(`PixelDepth:${window.screen.pixelDepth}`);
 
     // Generate a hash from the collected properties
     return hashString(props.join("|"));
 }
 
-async function hashString(str: string) {
-    const encoder = new TextEncoder();
-    const data = encoder.encode(str);
-    const hashBuffer = await crypto.subtle.digest("SHA-256", data);
-    return Array.from(new Uint8Array(hashBuffer))
+async function hashString(str: string): Promise<string> {
+    const msgUint8 = new TextEncoder().encode(str);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray
         .map(byte => byte.toString(16).padStart(2, "0"))
         .join("");
 }
-
