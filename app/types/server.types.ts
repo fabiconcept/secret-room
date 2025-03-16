@@ -37,6 +37,14 @@ export interface InviteServerResponse<T> extends ApiResponse<T> {
 export interface ServerUser {
     userId: string;
     username: string;
+    isOnline: boolean;
+    lastSeen: Date;
+}
+
+export interface ServerMessage {
+    type: 'status' | 'error';
+    content: string;
+    timestamp: number;
 }
 
 export interface ServerInviteData {

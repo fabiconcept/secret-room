@@ -7,8 +7,12 @@ export const useServerStore = create<ServerState>((set) => ({
     user: null,
     error: null,
     activeUsers: [],
+    isOwner: false,
     isLoading: true,
     setServer: (server) => set({ server, error: null }),
+    setIsOwner: (state) => set({
+        isOwner: state
+    }),
     setUser: (user) => set({ user }),
     setError: (error) => set({ error, server: null }),
     setLoading: (isLoading) => set({ isLoading }),

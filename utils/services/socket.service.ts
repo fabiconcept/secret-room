@@ -1,10 +1,7 @@
 import { io, Socket } from 'socket.io-client';
-
-interface ServerMessage {
-    type: 'status' | 'error';
-    content: string;
-    timestamp: number;
-}
+import { getItem } from '../localStorage';
+import { Auth } from '@/app/types/index.type';
+import { ServerMessage, ServerUser } from '@/app/types/server.types';
 
 interface ServerToClientEvents {
     'server_message': (message: ServerMessage) => void;
@@ -12,10 +9,12 @@ interface ServerToClientEvents {
     'server_joined': (message: ServerMessage) => void;
     'server_left': (message: ServerMessage) => void;
     'server_action': (message: ServerMessage) => void;
+    'active_users_updated': (users: ServerUser[]) => void;
+    'user_status_changed': (update: { userId: string; isOnline: boolean }) => void;
 }
 
 interface ClientToServerEvents {
-    'join_server': (payload: { serverId: string; apiKey: string }) => void;
+    'join_server': (payload: { serverId: string; userId: string }) => void;
     'leave_server': (serverId: string) => void;
 }
 
@@ -46,24 +45,36 @@ class SocketService {
         }
 
         try {
+            // Get user info from local storage
+            const authFallback = { userId: '', username: '', token: '' };
+            const auth = getItem<Auth>(serverId, authFallback);
+
+            if (!auth.userId) {
+                throw new Error('User ID not found');
+            }
+
             this.socket = io(this.baseUrl, {
+                query: { token },
                 transports: ['websocket'],
-                autoConnect: false,
-                auth: {
-                    token
-                }
+                autoConnect: true
             });
 
             this.currentServerId = serverId;
-            this.setupEventListeners();
-            this.socket.connect();
 
-            // Join server with credentials
-            this.socket.emit('join_server', {
-                serverId,
-                apiKey: token
+            this.socket.on('connect', () => {
+                if (this.socket) {
+                    this.socket.emit('join_server', {
+                        serverId,
+                        userId: auth.userId
+                    });
+                }
             });
 
+            this.socket.on('connect_error', (error) => {
+                console.error('Socket connection error:', error);
+            });
+
+            this.setupEventListeners();
         } catch (error) {
             console.error('Socket connection error:', error);
             throw error;
@@ -125,6 +136,14 @@ class SocketService {
         this.socket.on('server_action', (message) => {
             console.log('Server action:', message);
         });
+
+        this.socket.on('active_users_updated', (users) => {
+            console.log('Active users updated:', users);
+        });
+
+        this.socket.on('user_status_changed', (update) => {
+            console.log('User status changed:', update);
+        });
     }
 
     public onServerMessage(callback: (message: ServerMessage) => void): void {
@@ -145,6 +164,14 @@ class SocketService {
 
     public onServerAction(callback: (message: ServerMessage) => void): void {
         this.socket?.on('server_action', callback);
+    }
+
+    public onActiveUsersUpdated(callback: (users: ServerUser[]) => void): void {
+        this.socket?.on('active_users_updated', callback);
+    }
+
+    public onUserStatusChanged(callback: (update: { userId: string; isOnline: boolean }) => void): void {
+        this.socket?.on('user_status_changed', callback);
     }
 
     public removeAllListeners(): void {

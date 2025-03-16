@@ -30,7 +30,7 @@ const ErrorDisplay = ({ error }: { error: string }) => (
 );
 
 export default function ServerProvider({ children, server }: ServerProviderProps) {
-    const { setServer, setUser, setError, setLoading, clearServer, setActiveUsers, error, isLoading } = useServerStore();
+    const { setServer, setUser, setError, setLoading, clearServer, setActiveUsers, error, isLoading, setIsOwner } = useServerStore();
     const { server_id } = server;
 
     useEffect(() => {
@@ -52,6 +52,7 @@ export default function ServerProvider({ children, server }: ServerProviderProps
                 const { data: activeUsers } = await apiService.getServerActiveUsers(server.server_id, auth.token);
 
                 setActiveUsers(activeUsers.filter((user) => user.userId !== auth.userId));
+                setIsOwner(auth.userId === server.owner);
 
                 setServer(server);
                 setUser({
@@ -86,6 +87,10 @@ export default function ServerProvider({ children, server }: ServerProviderProps
                     toast(message.content, {
                         icon: '👋'
                     });
+                });
+
+                socketService.onActiveUsersUpdated((users) => {
+                    setActiveUsers(users.filter(user => user.userId !== auth.userId));
                 });
 
             } catch (error: any) {

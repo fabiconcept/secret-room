@@ -9,6 +9,8 @@ interface User {
 export interface ServerState {
     server: ServerResponse | null;
     user: User | null;
+    isOwner: boolean;
+    setIsOwner: (state: boolean) => void;
     activeUsers: ServerUser[];
     error: string | null;
     isLoading: boolean;
