@@ -10,7 +10,7 @@ interface UserCardProps {
 }
 
 const UserCard = ({ username, isOnline, lastSeen }: UserCardProps) => (
-    <div className="flex items-center gap-3 p-2 hover:bg-white/5 transition-colors cursor-pointer">
+    <div className="flex items-center gap-3 p-4 bg-white/5 hover:bg-white/8 backdrop-blur transition-colors cursor-pointer">
         <div className="relative">
             <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center">
                 {username[0].toUpperCase()}
@@ -39,8 +39,8 @@ export default function SideBar() {
                 <span className="glitch" data-text={`${server?.server_name}`}>{server?.server_name}</span>
             </header>
             <div className="flex-1 w-full overflow-y-auto">
-                <div className="p-4">
-                    {isOwner && <h2 className="text-gray-500 text-sm font-medium mb-2">Connected Users <span className="opacity-50">({activeUsers.length})</span></h2>}
+                <div className="">
+                    {isOwner && <h2 className="text-gray-500 text-sm mx-2 mt-2 font-medium mb-2">Connected Users <span className="opacity-50">({activeUsers.length})</span></h2>}
 
                     <div className="space-y-1">
                         {activeUsers.map((user) => {
