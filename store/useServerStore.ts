@@ -7,6 +7,7 @@ export const useServerStore = create<ServerState>((set) => ({
     user: null,
     error: null,
     activeUsers: [],
+    currentlyChatting: null,
     isOwner: false,
     isLoading: true,
     setServer: (server) => set({ server, error: null }),
@@ -23,6 +24,9 @@ export const useServerStore = create<ServerState>((set) => ({
         server: null,
         user: null,
         error: null,
+        activeUsers: [],
+        currentlyChatting: null,
         isLoading: false
-    })
+    }),
+    setCurrentlyChatting: (user) => set({ currentlyChatting: user })
 }));

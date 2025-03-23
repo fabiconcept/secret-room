@@ -22,4 +22,6 @@ export interface ServerState {
     setError: (error: string | null) => void;
     setLoading: (loading: boolean) => void;
     clearServer: () => void;
+    currentlyChatting: User | null;
+    setCurrentlyChatting: (user: User) => void;
 }
