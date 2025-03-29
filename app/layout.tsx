@@ -40,7 +40,7 @@ export default function RootLayout({
         />
         <div className="bg absolute h-screen w-screen top-0 left-0"></div>
         <HomeBackground />
-        <SoundTrack />
+        {/* <SoundTrack /> */}
         <SocketProvider>
           {children}
         </SocketProvider>

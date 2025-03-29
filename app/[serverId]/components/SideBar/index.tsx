@@ -2,6 +2,7 @@
 
 import { useServerStore } from "@/store/useServerStore";
 import { formatDistanceToNow } from 'date-fns';
+import Link from "next/link";
 
 interface UserCardProps {
     username: string;
@@ -64,6 +65,15 @@ export default function SideBar() {
                     </div>
                 </div>
             </div>
+            {isOwner && <footer className="w-full p-5 text-center text-white flex items-center gap-3 border-b border-gray-500/20 bg-black/5 backdrop-blur-[2px]">
+                {/* <Link href={`/ginvite/${server?.global_invitation_id}`}>{server?.global_invitation_id}</Link> */}
+                <div className="flex border border-white/5 hover:border-white/20 cursor-pointer active:scale-95 text-center items-center justify-center gap-2 p-3 rounded-3xl bg-white/10 flex-1">
+                    Global Invite
+                </div>
+                <div className="flex border border-white/5 hover:border-white/20 cursor-pointer active:scale-95 text-center items-center justify-center gap-2 p-3 rounded-3xl bg-white/10 flex-1">
+                    Unique Invite
+                </div>
+            </footer>}
         </section>
     )
 }
