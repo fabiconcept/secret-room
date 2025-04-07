@@ -1,6 +1,6 @@
 export default function ChatBox() {
     return (
-        <div className="flex items-end p-5 bg-white/5 border-t border-gray-500/20">
+        <div className="flex items-end p-5 pt-0 bg-white/5 border-t border-gray-500/20">
             <textarea
                 placeholder="Send a message..."
                 className="flex-1 bg-white/5 border border-gray-500/20 rounded-3xl px-5 py-3 focus:outline-none focus:ring-1 focus:ring-white/20 resize-none field-sizing-content max-h-32"

@@ -16,7 +16,9 @@ export default function FromMe() {
                     {/* <FaEye className="text-green-400"/> */}
                     <FaCheckDouble className="text-gray-400" />
                 </div>
-                <div className="h-10 w-10 border border-gray-500/20 rounded-full bg-white/20 active:opacity-40 flex items-center justify-center"></div>
+                <div className="h-10 w-10 border grid place-items-center border-gray-500/20 rounded-full bg-white/20 active:opacity-40">
+                    <span className="text-gray-200 font-semibold">D</span>
+                </div>
             </div>
         </div>
     )

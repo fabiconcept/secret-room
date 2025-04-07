@@ -9,7 +9,9 @@ export default function FromSender() {
                     {/* <FaEye className="text-green-400"/> */}
                     <FaCheckDouble className="text-gray-400" />
                 </div>
-                <div className="h-10 w-10 border border-gray-500/20 rounded-full bg-white/20 active:opacity-40 flex items-center justify-center"></div>
+                <div className="h-10 w-10 border grid place-items-center border-gray-500/20 rounded-full bg-white/20 active:opacity-40">
+                    <span className="text-gray-200 font-semibold">D</span>
+                </div>
             </div>
             <div className={clsx(
                 "max-w-1/2 bg-gray-500/20 border border-gray-500/50 backdrop-blur-[1px] rounded-4xl rounded-bl-none py-5 px-8",
