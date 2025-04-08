@@ -26,3 +26,5 @@ export const defaultOptions: GeneratorOptions = {
     maxLength: 32,
     separator: " "
 };
+
+export const appURL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
