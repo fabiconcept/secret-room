@@ -1,4 +1,5 @@
 import { creepyWords, defaultOptions } from "@/constants/index.constant";
+import toast from "react-hot-toast";
 
 /**
  * Generates a random creepy server name using various word combinations
@@ -130,6 +131,10 @@ export function generateEncryptionKey(length: number = 32): string {
         .slice(0, length);
 }
 
+/**
+ * Generates a unique fingerprint based on browser and system properties
+ * @returns A unique fingerprint string
+ */
 export async function getUniqueFingerprint() {
     const props = [];
 
@@ -209,6 +214,11 @@ export async function getUniqueFingerprint() {
     return hashString(props.join("|"));
 }
 
+/**
+ * Hashes a string using SHA-256
+ * @param str String to hash
+ * @returns Hashed string
+ */
 async function hashString(str: string): Promise<string> {
     const msgUint8 = new TextEncoder().encode(str);
     const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
@@ -217,3 +227,24 @@ async function hashString(str: string): Promise<string> {
         .map(byte => byte.toString(16).padStart(2, "0"))
         .join("");
 }
+
+async function copyText(text: string) {
+    try {
+        await navigator.clipboard.writeText(text);
+    } catch (err) {
+        console.error('Failed to copy text:', err);
+    }
+}
+
+/**
+ * Copies text to clipboard with loading and success/error notifications
+ * @param text Text to copy
+ */
+export const performCopy = (text: string) => {
+    const promise = copyText(text);
+    toast.promise(promise, {
+        loading: 'Copying to clipboard...',
+        success: 'Copied to clipboard!',
+        error: 'Failed to copy to clipboard'
+    });
+};
