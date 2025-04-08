@@ -106,6 +106,46 @@ class ApiService {
         }
     }
 
+    public async getServerByUniqueInvitation(uniqueInvitationId: string, fingerprint: string = ""): Promise<InviteServerResponse<ServerInviteData>> {
+        try {
+            if (!this.baseUrl) throw new Error("Missing baseUrl Variable!");
+
+            const response = await fetch(`${this.baseUrl}/server/unique-invitation/${uniqueInvitationId}`, {
+                method: 'POST',
+                headers: {
+                    ...this.getHeaders(),
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ fingerprint }),
+                cache: 'no-store' // For server-side rendering
+            });
+
+            return this.handleResponse<InviteServerResponse<ServerInviteData>>(response);
+        } catch (error) {
+            console.error('API Error:', error);
+            throw this.handleError(error);
+        }
+    }
+
+    public async generateUniqueInvitation(serverId: string, token: string): Promise<ApiResponse<{ inviteCode: string}>> {
+        try {
+            if (!this.baseUrl) throw new Error("Missing baseUrl Variable!");
+
+            const response = await fetch(`${this.baseUrl}/server/${serverId}/generate-unique-server-invitation-id`, {
+                method: 'GET',
+                headers: {
+                    ...this.getHeaders(),
+                    'Authorization': token
+                }
+            });
+
+            return this.handleResponse<ApiResponse<{ inviteCode: string}>>(response);
+        } catch (error) {
+            console.error('API Error:', error);
+            throw this.handleError(error);
+        }
+    }
+
     private handleError(error: unknown): Error {
         if (error instanceof Error) {
             return error;
