@@ -1,3 +1,5 @@
+import { AppSettings, STORAGE_KEYS } from "@/types";
+
 // Helper function to safely parse JSON
 const safeJSONParse = <T>(data: string | null, fallback: T): T => {
     if (!data) return fallback;

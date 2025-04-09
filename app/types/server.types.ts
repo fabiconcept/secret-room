@@ -39,6 +39,8 @@ export interface ServerUser {
     username: string;
     isOnline: boolean;
     lastSeen: Date;
+    bgColor: string;
+    textColor: string;
 }
 
 export interface ServerMessage {

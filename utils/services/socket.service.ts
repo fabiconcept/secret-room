@@ -2,9 +2,11 @@ import { io, Socket } from 'socket.io-client';
 import { getItem } from '../localStorage';
 import { Auth } from '@/app/types/index.type';
 import { ServerMessage, ServerUser } from '@/app/types/server.types';
+import { Message } from '@/types';
 
 interface ServerToClientEvents {
     'server_message': (message: ServerMessage) => void;
+    'new-message': (message: Message) => void;
     'server_error': (message: ServerMessage) => void;
     'server_joined': (message: ServerMessage) => void;
     'server_left': (message: ServerMessage) => void;
@@ -16,6 +18,7 @@ interface ServerToClientEvents {
 interface ClientToServerEvents {
     'join_server': (payload: { serverId: string; userId: string }) => void;
     'leave_server': (serverId: string) => void;
+    'new-message': (serverId: string, message: Message) => void;
 }
 
 class SocketService {
@@ -120,6 +123,10 @@ class SocketService {
         this.socket.on('server_message', (message) => {
             console.log('Server message:', message);
         });
+        
+        this.socket.on('new-message', (message) => {
+            console.log('New message:', message);
+        });
 
         this.socket.on('server_error', (message) => {
             console.error('Server error:', message);
@@ -150,6 +157,10 @@ class SocketService {
         this.socket?.on('server_message', callback);
     }
 
+    public onNewMessage(callback: (message: Message) => void): void {
+        this.socket?.on('new-message', callback);
+    }
+
     public onServerError(callback: (message: ServerMessage) => void): void {
         this.socket?.on('server_error', callback);
     }
@@ -172,6 +183,12 @@ class SocketService {
 
     public onUserStatusChanged(callback: (update: { userId: string; isOnline: boolean }) => void): void {
         this.socket?.on('user_status_changed', callback);
+    }
+
+    // Client to Server
+    public emitNewMessage(message: Message): void {
+        if (!this.socket || !this.currentServerId) return;
+        this.socket.emit('new-message', this.currentServerId, message);
     }
 
     public removeAllListeners(): void {

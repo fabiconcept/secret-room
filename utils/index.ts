@@ -1,4 +1,5 @@
 import { creepyWords, defaultOptions } from "@/constants/index.constant";
+import { GeneratorOptions } from "@/types";
 import toast from "react-hot-toast";
 
 /**
@@ -248,3 +249,40 @@ export const performCopy = (text: string) => {
         error: 'Failed to copy to clipboard'
     });
 };
+
+/**
+ * Formats the last seen time in a concise way
+ * @param lastSeen Date of last seen
+ * @returns Concise string representing time since last seen
+ */
+export function formatLastSeen(lastSeen: Date): string {
+    const now = new Date();
+    const diffSeconds = Math.floor((now.getTime() - lastSeen.getTime()) / 1000);
+    
+    // Just now (less than 1 minute)
+    if (diffSeconds < 60) {
+      return `${diffSeconds}s`;
+    }
+    
+    // Minutes (less than 1 hour)
+    if (diffSeconds < 3600) {
+      const minutes = Math.floor(diffSeconds / 60);
+      return `${minutes}m`;
+    }
+    
+    // Hours (less than 1 day)
+    if (diffSeconds < 86400) {
+      const hours = Math.floor(diffSeconds / 3600);
+      return `${hours}h`;
+    }
+    
+    // Days (less than 7 days)
+    if (diffSeconds < 604800) {
+      const days = Math.floor(diffSeconds / 86400);
+      return `${days}d`;
+    }
+    
+    // Weeks or longer - show date
+    const options: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric' };
+    return lastSeen.toLocaleDateString(undefined, options);
+  }

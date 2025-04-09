@@ -5,13 +5,19 @@ import ChatBox from "./ChatBox";
 import ChatSection from "./Chats/Index";
 
 export default function MainSection() {
-    const { server } = useServerStore();
+    const { server, currentlyChatting } = useServerStore();
+
+    if (!server) return null;
 
     return (
         <section className="flex-1 h-full flex flex-col">
-            <Header />
-            <ChatSection />
-            <ChatBox />
+            {currentlyChatting && (
+                <>
+                    <Header />
+                    <ChatSection />
+                    <ChatBox />
+                </>
+            )}
         </section>
     )
 }

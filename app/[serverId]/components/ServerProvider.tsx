@@ -9,52 +9,12 @@ import { socketService } from '@/utils/services/socket.service';
 import { toast } from 'react-hot-toast';
 import { ServerResponse } from '@/app/types/server.types';
 import { Auth } from '@/app/types/index.type';
+import { tempUsers } from '@/constants/index.constant';
 
 interface ServerProviderProps {
     children: React.ReactNode;
     server: ServerResponse;
 }
-
-
-const tempUsers = [
-    {
-        userId: "1",
-        username: "Alter EGO",
-        isOnline: true,
-        lastSeen: new Date("2025-03-24T22:08:59+01:00")
-    },
-    {
-        userId: "2",
-        username: "Anon",
-        isOnline: false,
-        lastSeen: new Date("2025-03-24T21:30:00+01:00")
-    },
-    {
-        userId: "3",
-        username: "Ghost",
-        isOnline: false,
-        lastSeen: new Date("2025-03-24T20:45:00+01:00")
-    },
-    {
-        userId: "4",
-        username: "Shadow",
-        isOnline: false,
-        lastSeen: new Date("2025-03-24T19:15:00+01:00")
-    },
-    {
-        userId: "5",
-        username: "Specter",
-        isOnline: false,
-        lastSeen: new Date("2025-03-24T18:30:00+01:00")
-    },
-    {
-        userId: "6",
-        username: "Phantom",
-        isOnline: false,
-        lastSeen: new Date("2025-03-24T17:45:00+01:00")
-    },
-    
-]
 
 const LoadingSpinner = () => (
     <div className="flex items-center justify-center min-h-screen">
@@ -71,7 +31,7 @@ const ErrorDisplay = ({ error }: { error: string }) => (
 );
 
 export default function ServerProvider({ children, server }: ServerProviderProps) {
-    const { setServer, setUser, setError, setLoading, clearServer, setActiveUsers, error, isLoading, setIsOwner, isOwner } = useServerStore();
+    const { setServer, setUser, setError, setLoading, clearServer, setActiveUsers, error, isLoading, setIsOwner, setCurrentlyChatting, addMessage } = useServerStore();
     const { server_id } = server;
 
     useEffect(() => {
@@ -115,6 +75,7 @@ export default function ServerProvider({ children, server }: ServerProviderProps
                     toast(message.content, {
                         icon: '📢'
                     });
+
                 });
 
                 socketService.onServerError((message) => {
@@ -136,8 +97,19 @@ export default function ServerProvider({ children, server }: ServerProviderProps
                 });
 
                 socketService.onActiveUsersUpdated((users) => {
+                    const filteredUsers = users.filter((user) => user.userId !== auth.userId);
+                    if(!isServerOwner) {
+                        setCurrentlyChatting(filteredUsers[0]);
+                    }
+                    setActiveUsers(filteredUsers);
+                });
 
-                    setActiveUsers([...users, ...tempUsers].filter(user => user.userId !== auth.userId));
+                socketService.onNewMessage((message) => {
+                    toast(message.content, {
+                        icon: '💬'
+                    });
+                    
+                    addMessage(message);
                 });
 
             } catch (error: any) {

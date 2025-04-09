@@ -14,6 +14,7 @@ export default function SideBar() {
 
     
     if (!server) return null;
+    if (!isOwner) return null;
     
     const generateUniqueInvitation = async () => {
         const authFallback = {
@@ -43,23 +44,29 @@ export default function SideBar() {
             <div className="flex-1 w-full overflow-y-auto bg-white/5">
                 <div className="">
                     {isOwner && <h2 className="text-gray-500 text-sm mx-2 mt-2 font-medium mb-2">Connected Users <span className="opacity-50">({activeUsers.length})</span></h2>}
-
+                    
                     <div className="">
                         {activeUsers.map((user) => {
                             if (isOwner) {
                                 return (<UserCard
                                     key={user.userId}
+                                    userId={user.userId}
                                     username={user.username}
                                     isOnline={user.isOnline}
                                     lastSeen={user.lastSeen}
+                                    bgColor={user.bgColor}
+                                    textColor={user.textColor}
                                 />)
                             }
                             if (user.userId !== server.owner) return null;
                             return (<UserCard
                                 key={user.userId}
+                                userId={user.userId}
                                 username={user.username}
                                 isOnline={user.isOnline}
                                 lastSeen={user.lastSeen}
+                                bgColor={user.bgColor}
+                                textColor={user.textColor}
                             />)
                         }
                         )}

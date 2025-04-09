@@ -1,5 +1,5 @@
-import { ServerState } from '@/types/useServerStore.type';
-import { create } from 'zustand';
+import { ServerState } from "@/types/useServerStore.type";
+import { create } from "zustand";
 
 
 export const useServerStore = create<ServerState>((set) => ({
@@ -10,6 +10,9 @@ export const useServerStore = create<ServerState>((set) => ({
     currentlyChatting: null,
     isOwner: false,
     isLoading: true,
+    messages: [],
+    addMessage: (message) => set(state => ({ messages: [...state.messages, message] })),
+    populateMessages: (messages) => set({ messages }),
     setServer: (server) => set({ server, error: null }),
     setIsOwner: (state) => set({
         isOwner: state
