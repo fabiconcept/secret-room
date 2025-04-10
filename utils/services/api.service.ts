@@ -1,4 +1,5 @@
-import { InviteServerResponse, ApiResponse, CreateServerRequest, ServerResponse, CreateServerResponse, ServerUser, ServerInviteData } from "@/app/types/server.types";
+import { InviteServerResponse, ApiResponse, CreateServerRequest, ServerResponse, CreateServerResponse, ServerUser, ServerInviteData, ServerMessage } from "@/app/types/server.types";
+import { Message } from "@/types";
 
 class ApiService {
     private static instance: ApiService;
@@ -140,6 +141,25 @@ class ApiService {
             });
 
             return this.handleResponse<ApiResponse<{ inviteCode: string}>>(response);
+        } catch (error) {
+            console.error('API Error:', error);
+            throw this.handleError(error);
+        }
+    }
+
+    public async getServerMessages(serverId: string, token: string): Promise<ApiResponse<Message[]>> {
+        try {
+            if (!this.baseUrl) throw new Error("Missing baseUrl Variable!");
+
+            const response = await fetch(`${this.baseUrl}/server/${serverId}/messages`, {
+                method: 'GET',
+                headers: {
+                    ...this.getHeaders(),
+                    'Authorization': token
+                }
+            });
+
+            return this.handleResponse<ApiResponse<Message[]>>(response);
         } catch (error) {
             console.error('API Error:', error);
             throw this.handleError(error);
