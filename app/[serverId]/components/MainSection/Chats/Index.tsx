@@ -56,15 +56,11 @@ export default function ChatSection() {
     const messageVariants = {
         hidden: { 
             opacity: 0, 
-            scale: 0.8,
-            x: 30,
-            y: 0
+            scale: 0,
         },
         visible: { 
             opacity: 1, 
             scale: 1,
-            x: 0,
-            y: 0,
             transition: { 
                 type: "spring", 
                 stiffness: 5000, 
@@ -76,14 +72,18 @@ export default function ChatSection() {
         }
     };
 
-    const relevantMessages = messages.filter(({ senderId, receiverId }) =>
-        (senderId === user.userId && receiverId === currentlyChatting.userId) ||
-        (senderId === currentlyChatting.userId && receiverId === user.userId)
-      );
+    const relevantMessages = Array.from(
+        new Map(
+            messages
+                .filter(({ senderId, receiverId }) =>
+                    (senderId === user.userId && receiverId === currentlyChatting.userId) ||
+                    (senderId === currentlyChatting.userId && receiverId === user.userId)
+                )
+                .map(message => [`${message.senderId}-${message.createdAt}`, message])
+        ).values()
+    );
       
-
-    
-
+      
     return (
         <div className="flex-1 flex flex-col relative overflow-hidden">
             <div 
@@ -102,7 +102,7 @@ export default function ChatSection() {
                         >
                             {message.senderId !== user.userId ? <FromSender message={message.content} /> : <FromMe message={message.content} />}
                         </motion.div>
-                    ) : (
+                    ) : (   
                         <div key={`${message.senderId}-${message.createdAt}`}>
                             {message.senderId !== user.userId ? <FromSender message={message.content} /> : <FromMe message={message.content} />}
                         </div>

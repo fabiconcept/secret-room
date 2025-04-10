@@ -29,4 +29,5 @@ export interface ServerState {
     setLoading: (loading: boolean) => void;
     clearServer: () => void;
     setCurrentlyChatting: (user: ServerUser) => void;
+    removeCurrentlyChatting: () => void;
 }

@@ -23,9 +23,6 @@ export default function UniqueInvitationPage() {
             try {
                 const uniqueInvitationId = params?.uniqueInvitationId as string;
                 if (!uniqueInvitationId) {
-                    console.log({
-                        uniqueInvitationId
-                    })
                     throw new Error('Invalid invitation link');
                 }
 

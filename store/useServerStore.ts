@@ -31,5 +31,6 @@ export const useServerStore = create<ServerState>((set) => ({
         currentlyChatting: null,
         isLoading: false
     }),
-    setCurrentlyChatting: (user) => set({ currentlyChatting: user })
+    setCurrentlyChatting: (user) => set({ currentlyChatting: user }),
+    removeCurrentlyChatting: () => set({ currentlyChatting: null })
 }));
