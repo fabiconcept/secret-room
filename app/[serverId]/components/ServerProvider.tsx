@@ -9,7 +9,6 @@ import { socketService } from '@/utils/services/socket.service';
 import { toast } from 'react-hot-toast';
 import { ServerResponse } from '@/app/types/server.types';
 import { Auth } from '@/app/types/index.type';
-import { tempUsers } from '@/constants/index.constant';
 
 interface ServerProviderProps {
     children: React.ReactNode;
@@ -31,7 +30,7 @@ const ErrorDisplay = ({ error }: { error: string }) => (
 );
 
 export default function ServerProvider({ children, server }: ServerProviderProps) {
-    const { setServer, setUser, setError, setLoading, clearServer, setActiveUsers, error, isLoading, setIsOwner, setCurrentlyChatting, addMessage } = useServerStore();
+    const { setServer, setUser, setError, setLoading, clearServer, setActiveUsers, error, isLoading, setIsOwner, setCurrentlyChatting, addMessage, currentlyChatting, populateMessages } = useServerStore();
     const { server_id } = server;
 
     useEffect(() => {
@@ -51,7 +50,11 @@ export default function ServerProvider({ children, server }: ServerProviderProps
                 }
 
 
-                const isServerOwner = auth.userId === server.owner
+                const isServerOwner = auth.userId === server.owner;
+
+                const { data: messages } = await apiService.getServerMessages(server.server_id, auth.token);
+
+                console.log({messages})
 
                 setIsOwner(isServerOwner);
 
@@ -61,6 +64,8 @@ export default function ServerProvider({ children, server }: ServerProviderProps
                     username: auth.username,
                     token: auth.token
                 });
+
+                populateMessages(messages);
 
                 if (isServerOwner) {
                     const { data: activeUsers } = await apiService.getServerActiveUsers(server.server_id, auth.token);
@@ -99,15 +104,16 @@ export default function ServerProvider({ children, server }: ServerProviderProps
                 socketService.onActiveUsersUpdated((users) => {
                     const filteredUsers = users.filter((user) => user.userId !== auth.userId);
                     if(!isServerOwner) {
-                        setCurrentlyChatting(filteredUsers[0]);
+                        setCurrentlyChatting(filteredUsers.find((user) => user.userId === server.owner)!);
                     }
                     setActiveUsers(filteredUsers);
                 });
 
                 socketService.onNewMessage((message) => {
-                    toast(message.content, {
-                        icon: '💬'
-                    });
+                    const { receiverId, senderId } = message;
+                    const relevantMessages = receiverId === auth.userId || senderId === auth.userId;
+
+                    if (!relevantMessages) return;
                     
                     addMessage(message);
                 });
