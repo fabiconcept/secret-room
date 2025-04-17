@@ -58,7 +58,7 @@ export default function MainSection() {
             right-0 p-3 max-sm:p-2">
                 <button className="px-5 py-2 max-sm:py-4 rounded-lg text-sm bg-red-500/10 border border-red-500/10 hover:bg-red-500 hover:text-white cursor-pointer active:scale-90 text-white">
                     <span className="max-sm:hidden">Delete this server</span>
-                    <FaTrash/>
+                    <FaTrash className="max-sm:hidden" />
                 </button> 
             </div>}
             {!currentlyChatting && <div className="absolute max-sm:hidden top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 px-7 text-2xl text-gray-500">
