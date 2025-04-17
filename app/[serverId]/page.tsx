@@ -80,9 +80,9 @@ export default function Page() {
 
     return (
         <ServerProvider server={server}>
-            <div className="grid place-items-center h-screen w-screen">
+            <div className="grid place-items-center min-h-dvh w-screen">
                 <div 
-                    className="h-screen w-screen sm:rounded-3xl overflow-hidden border border-gray-500/20 sm:max-h-[calc(100vh-20px)] sm:max-w-[calc(100vw-20px)]">
+                    className="h-dvh w-screen sm:rounded-3xl overflow-hidden border border-gray-500/20 sm:max-h-[calc(100vh-20px)] sm:max-w-[calc(100vw-20px)]">
                     <ChatSection />
                 </div>
             </div>
