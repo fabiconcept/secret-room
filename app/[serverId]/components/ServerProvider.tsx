@@ -147,7 +147,12 @@ export default function ServerProvider({ children, server }: ServerProviderProps
                 });
 
                 socketService.onMessageRead((messageId) => {
-                    playSeenSound.play();
+                    const message = messages.find((message) => message.messageId === messageId);
+                    if(!message) return;
+
+                    if(message.senderId === auth.userId) {
+                        playSeenSound.play();
+                    }
                     onMessageRead(messageId);
                 });
 
