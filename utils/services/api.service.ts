@@ -151,7 +151,7 @@ class ApiService {
         try {
             if (!this.baseUrl) throw new Error("Missing baseUrl Variable!");
 
-            const response = await fetch(`${this.baseUrl}/server/${serverId}/messages`, {
+            const response = await fetch(`${this.baseUrl}/messages/${serverId}`, {
                 method: 'GET',
                 headers: {
                     ...this.getHeaders(),
@@ -160,6 +160,25 @@ class ApiService {
             });
 
             return this.handleResponse<ApiResponse<Message[]>>(response);
+        } catch (error) {
+            console.error('API Error:', error);
+            throw this.handleError(error);
+        }
+    }
+
+    public async deleteServer(serverId: string, token: string): Promise<ApiResponse<void>> {
+        try {
+            if (!this.baseUrl) throw new Error("Missing baseUrl Variable!");
+
+            const response = await fetch(`${this.baseUrl}/server/${serverId}`, {
+                method: 'DELETE',
+                headers: {
+                    ...this.getHeaders(),
+                    'Authorization': token
+                }
+            });
+
+            return this.handleResponse<ApiResponse<void>>(response);
         } catch (error) {
             console.error('API Error:', error);
             throw this.handleError(error);
