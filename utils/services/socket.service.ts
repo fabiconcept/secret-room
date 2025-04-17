@@ -10,15 +10,18 @@ interface ServerToClientEvents {
     'server_error': (message: ServerMessage) => void;
     'server_joined': (message: ServerMessage) => void;
     'server_left': (message: ServerMessage) => void;
+    'message_read': (messageId: string) => void;
     'server_action': (message: ServerMessage) => void;
     'active_users_updated': (users: ServerUser[]) => void;
+    'server_deleted': () => void;
     'user_status_changed': (update: { userId: string; isOnline: boolean }) => void;
 }
 
 interface ClientToServerEvents {
     'join_server': (payload: { serverId: string; userId: string }) => void;
     'leave_server': (serverId: string) => void;
-    'new-message': (serverId: string, message: Message) => void;
+    'new-message': (serverId: string, message: Omit<Message, 'messageId'>) => void;
+    'mark_message_read': (messageId: string) => void;
 }
 
 class SocketService {
@@ -128,6 +131,10 @@ class SocketService {
             console.log('New message:', message);
         });
 
+        this.socket.on('message_read', (messageId) => {
+            console.log('Message read:', messageId);
+        });
+
         this.socket.on('server_error', (message) => {
             console.error('Server error:', message);
         });
@@ -151,6 +158,10 @@ class SocketService {
         this.socket.on('user_status_changed', (update) => {
             console.log('User status changed:', update);
         });
+
+        this.socket.on('server_deleted', () => {
+            console.log('Server deleted');
+        });
     }
 
     public onServerMessage(callback: (message: ServerMessage) => void): void {
@@ -159,6 +170,11 @@ class SocketService {
 
     public onNewMessage(callback: (message: Message) => void): void {
         this.socket?.on('new-message', callback);
+    }
+
+    public onMessageRead(callback: (messageId: string) => void): void {
+        console.log('onMessageRead callback registered')
+        this.socket?.on('message_read', callback);
     }
 
     public onServerError(callback: (message: ServerMessage) => void): void {
@@ -185,10 +201,24 @@ class SocketService {
         this.socket?.on('user_status_changed', callback);
     }
 
+    public onServerDeleted(callback: () => void): void {
+        this.socket?.on('server_deleted', callback);
+    }
+
     // Client to Server
-    public emitNewMessage(message: Message): void {
+    public emitNewMessage(message: Omit<Message, 'messageId'>): void {
         if (!this.socket || !this.currentServerId) return;
         this.socket.emit('new-message', this.currentServerId, message);
+    }
+
+    public emitReadMessage(messageId: string): void {
+        if (!this.socket || !this.currentServerId) return;
+        this.socket.emit('mark_message_read', messageId);
+    }
+
+    public emitLeaveServer(): void {
+        if (!this.socket || !this.currentServerId) return;
+        this.socket.emit('leave_server', this.currentServerId);
     }
 
     public removeAllListeners(): void {
