@@ -1,9 +1,11 @@
 'use client';
 
 import React, { useEffect, useRef } from 'react';
+import { useAppStore } from '@/store/useAppStore';
 
 const HomeBackground: React.FC = () => {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
+    const { homeBackgroundFontSize, homeTextColor } = useAppStore();
 
     useEffect(() => {
         const canvas = canvasRef.current!;
@@ -28,7 +30,7 @@ const HomeBackground: React.FC = () => {
         const charactersArray: string[] = characters.split("");
 
         // Matrix configuration
-        const fontSize: number = 16;
+        const fontSize: number = homeBackgroundFontSize;
 
         // Calculate the number of columns
         const columns: number = Math.floor(canvas.width / fontSize);
@@ -40,8 +42,8 @@ const HomeBackground: React.FC = () => {
         function drawMatrix(): void {
             context.fillStyle = "rgba(0, 0, 0, 0.05)";
             context.fillRect(0, 0, canvas.width, canvas.height);
-            context.fillStyle = "#aaa"; // Change to matrix green
-            context.font = `${fontSize}px monospace`;
+            context.fillStyle = homeTextColor; // Change to matrix green
+            context.font = `${homeBackgroundFontSize}px monospace`;
 
             for (let i = 0; i < matrix.length; i++) {
                 const randomIndex: number = Math.floor(Math.random() * charactersArray.length);
@@ -77,7 +79,7 @@ const HomeBackground: React.FC = () => {
                 cancelAnimationFrame(animationFrame);
             }
         };
-    }, []);
+    }, [homeBackgroundFontSize, homeTextColor]);
 
     return (
         <div className='absolute top-0 left-0 flex items-center justify-center w-screen h-screen opacity-5'>

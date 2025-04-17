@@ -27,7 +27,11 @@ export interface Message {
     serverId: string,
     senderId: string,
     receiverId: string,
+    messageId: string,
     content: string,
     createdAt: Date,
-    read: boolean
+    readBySender: boolean,
+    readByReceiver: boolean,
+    attachmentUrl?: string,
+    sent: boolean
 }

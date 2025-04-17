@@ -1,8 +1,9 @@
 "use client";
 
 import { useServerStore } from '@/store/useServerStore';
-import { formatLastSeen } from '@/utils';
+import useSoundEffect from '@/utils/Hooks/useSoundEffect';
 import clsx from 'clsx';
+import { FaPaperclip } from 'react-icons/fa6';
 
 interface UserCardProps {
     userId: string;
@@ -15,6 +16,7 @@ interface UserCardProps {
 
 export default function UserCard({ userId, username, isOnline, lastSeen, bgColor, textColor }: UserCardProps) {
     const { server, messages, setCurrentlyChatting, activeUsers } = useServerStore();
+    const playOpenSound = useSoundEffect('/audio/open.mp3', { volume: 0.5, preload: true });
 
     if (!server) return null;
 
@@ -28,12 +30,13 @@ export default function UserCard({ userId, username, isOnline, lastSeen, bgColor
     const handleSetCurrentlyChatting = () => {
         const user = activeUsers.find((user) => user.userId === userId);
         if (!user) return;
+        playOpenSound.play();
         setCurrentlyChatting(user);
     }
 
     return (
         <div className=''>
-            <div onClick={handleSetCurrentlyChatting} className="flex items-center gap-3 px-4 py-1 hover:bg-white/2 transition-colors cursor-pointer">
+            <div onClick={handleSetCurrentlyChatting} className="flex items-center gap-3 px-4 py-3 border-y border-gray-500/20 bg-white/2 hover:bg-white/5 transition-colors cursor-pointer">
                 <div className="relative">
                     <div
                         className={clsx(
@@ -50,15 +53,13 @@ export default function UserCard({ userId, username, isOnline, lastSeen, bgColor
                 </div>
                 <div className="flex-1 grid gap-1">
                     <h3 className="text-white font-semibold capitalize">{username}</h3>
-                    <p className={clsx("text-sm", lastMessage?.read === false ? "text-white" : "text-gray-400")}>
+                    <p className={clsx("text-sm w-[90%] truncate", lastMessage?.readByReceiver === false ? "text-white" : "text-gray-400")}>
                         {lastMessage ? lastMessage.content : 'No messages yet.'}
                     </p>
                 </div>
                 <div>
-                    {!isOnline && (
-                        <p className="text-xs text-gray-400">
-                            Last seen {formatLastSeen(new Date(lastSeen))} ago
-                        </p>
+                    {lastMessage?.attachmentUrl &&(
+                        <FaPaperclip/>
                     )}
                 </div>
             </div>

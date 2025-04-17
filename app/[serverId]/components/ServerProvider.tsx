@@ -9,6 +9,8 @@ import { socketService } from '@/utils/services/socket.service';
 import { toast } from 'react-hot-toast';
 import { ServerResponse } from '@/app/types/server.types';
 import { Auth } from '@/app/types/index.type';
+import { useAppStore } from '@/store/useAppStore';
+import useSoundEffect from '@/utils/Hooks/useSoundEffect';
 
 interface ServerProviderProps {
     children: React.ReactNode;
@@ -30,11 +32,19 @@ const ErrorDisplay = ({ error }: { error: string }) => (
 );
 
 export default function ServerProvider({ children, server }: ServerProviderProps) {
-    const { setServer, setUser, setError, setLoading, clearServer, setActiveUsers, error, isLoading, setIsOwner, setCurrentlyChatting, addMessage, currentlyChatting, populateMessages } = useServerStore();
+    const { setServer, setUser, setError, setLoading, clearServer, setActiveUsers, isOwner, user, error, isLoading, setIsOwner, setCurrentlyChatting, addMessage, onMessageRead, populateMessages } = useServerStore();
     const { server_id } = server;
+    const { setHomeBackgroundFontSize } = useAppStore();
+
+    const playPopSound = useSoundEffect('/audio/pop.mp3', { volume: 1, preload: true });
+    const playCreakingSound = useSoundEffect('/audio/creaking-door.mp3', { volume: 0.5, preload: true });
+    const playWoshSound = useSoundEffect('/audio/wosh.mp3', { volume: 0.5, preload: true });
+    const playSeenSound = useSoundEffect('/audio/seen.mp3', { volume: 0.5, preload: true });
+
 
     useEffect(() => {
         const initializeServerState = async () => {
+            playCreakingSound.play();
             try {
                 setLoading(true);
                 const authFallback = {
@@ -42,19 +52,17 @@ export default function ServerProvider({ children, server }: ServerProviderProps
                     username: '',
                     token: ''
                 };
+
                 const auth = getItem<Auth>(server_id, authFallback);
 
-                if (!auth.userId || !auth.username || !auth.token) {
+                if (!auth.userId || !auth.token) {
                     clearServer();
                     redirect('/');
                 }
 
-
                 const isServerOwner = auth.userId === server.owner;
 
                 const { data: messages } = await apiService.getServerMessages(server.server_id, auth.token);
-
-                console.log({messages})
 
                 setIsOwner(isServerOwner);
 
@@ -66,6 +74,7 @@ export default function ServerProvider({ children, server }: ServerProviderProps
                 });
 
                 populateMessages(messages);
+                setHomeBackgroundFontSize(32);
 
                 if (isServerOwner) {
                     const { data: activeUsers } = await apiService.getServerActiveUsers(server.server_id, auth.token);
@@ -99,12 +108,23 @@ export default function ServerProvider({ children, server }: ServerProviderProps
                     toast(message.content, {
                         icon: '👋'
                     });
+                    clearServer();
+                    redirect('/');
+                });
+
+                socketService.onServerDeleted(() => {
+                    if (isOwner) return;
+                    toast.error('Server deleted');
+                    clearServer();
+                    redirect('/');
                 });
 
                 socketService.onActiveUsersUpdated((users) => {
                     const filteredUsers = users.filter((user) => user.userId !== auth.userId);
+                    const serverOwner = filteredUsers.find((user) => user.userId === server.owner);
+
                     if(!isServerOwner) {
-                        setCurrentlyChatting(filteredUsers.find((user) => user.userId === server.owner)!);
+                        setCurrentlyChatting(serverOwner!);
                     }
                     setActiveUsers(filteredUsers);
                 });
@@ -115,7 +135,20 @@ export default function ServerProvider({ children, server }: ServerProviderProps
 
                     if (!relevantMessages) return;
                     
+                    if(receiverId === auth.userId) {
+                        if(message.attachmentUrl) {
+                            playWoshSound.play();
+                        }else{
+                            playPopSound.play();
+                        }
+                    }
+
                     addMessage(message);
+                });
+
+                socketService.onMessageRead((messageId) => {
+                    playSeenSound.play();
+                    onMessageRead(messageId);
                 });
 
             } catch (error: any) {
@@ -139,6 +172,7 @@ export default function ServerProvider({ children, server }: ServerProviderProps
         <>
             {isLoading && <LoadingSpinner />}
             {error && <ErrorDisplay error={error} />}
+            {/* {!isLoading && !error && children} */}
             {!isLoading && !error && children}
         </>
     );

@@ -1,5 +1,6 @@
 'use client';
 
+import useSoundEffect from '@/utils/Hooks/useSoundEffect';
 import React from 'react';
 import { FaShuffle } from 'react-icons/fa6';
 
@@ -28,6 +29,10 @@ export const InputWithShuffle: React.FC<InputWithShuffleProps> = ({
     disabled,
     hint
 }) => {
+    const playSwingSound = useSoundEffect('/audio/swing.mp3', { volume: 0.5, preload: true });
+    const playClickSound = useSoundEffect('/audio/click.mp3', { volume: 0.25, preload: true });
+
+
     return (
         <div className="relative">
             <label className='text-sm text-gray-300' htmlFor={id}>{label} <span data-text={'*'} className='text-red-500 glitch'>*</span></label>
@@ -37,14 +42,20 @@ export const InputWithShuffle: React.FC<InputWithShuffleProps> = ({
                     id={id}
                     name={id}
                     value={value}
-                    onChange={(e) => onChange(e.target.value)}
+                    onChange={(e) => {
+                        onChange(e.target.value)
+                        playClickSound.play();
+                    }}
                     onKeyDown={onKeyDown}
                     placeholder={placeholder}
                     disabled={disabled}
                     className={`w-full bg-[#2b2b2b] mt-2 text-gray-200 p-3 rounded-lg border border-gray-700 focus:border-gray-500 focus:outline-none transition-colors ${className}`}
                 />
                 <button
-                    onClick={onShuffle}
+                    onClick={()=>{
+                        playSwingSound.play();
+                        onShuffle()
+                    }}
                     title={`Generate a new ${label.toLowerCase()}`}
                     className="mt-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-200 rounded-lg cursor-pointer active:scale-95 group"
                 >

@@ -1,5 +1,6 @@
 'use client';
 
+import useSoundEffect from '@/utils/Hooks/useSoundEffect';
 import React, { useState, useEffect, useCallback } from 'react';
 import { FaSkull } from 'react-icons/fa6';
 
@@ -22,6 +23,8 @@ export const LifespanSlider: React.FC<LifespanSliderProps> = ({
     onChange
 }) => {
     const [isDragging, setIsDragging] = useState(false);
+    const playWindUpSound = useSoundEffect('/audio/windup.mp3', { volume: 0.5, preload: true });
+
 
     // Find the closest checkpoint to the current value
     const findClosestCheckpoint = useCallback((val: number) => {
@@ -46,6 +49,7 @@ export const LifespanSlider: React.FC<LifespanSliderProps> = ({
     }, [findClosestCheckpoint]);
 
     const handleSliderClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+        playWindUpSound.play();
         const rect = e.currentTarget.getBoundingClientRect();
         const percent = ((e.clientX - rect.left) / rect.width) * 100;
         onChange(percentToValue(Math.max(0, Math.min(100, percent))));
@@ -56,6 +60,7 @@ export const LifespanSlider: React.FC<LifespanSliderProps> = ({
         const slider = document.getElementById('lifespan-slider');
         if (!slider) return;
 
+        playWindUpSound.play();
         const rect = slider.getBoundingClientRect();
         const percent = ((e.clientX - rect.left) / rect.width) * 100;
         onChange(percentToValue(Math.max(0, Math.min(100, percent))));

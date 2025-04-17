@@ -7,6 +7,7 @@ import { getUniqueFingerprint } from '@/utils';
 import { getItem, setItem } from '@/utils/localStorage';
 import { Auth } from '@/app/types/index.type';
 import TypeWriter from '@/app/components/TypeWriter';
+import { useAppStore } from '@/store/useAppStore';
 
 export default function InvitationPage() {
     const params = useParams();
@@ -17,6 +18,7 @@ export default function InvitationPage() {
         isError: boolean;
         serverId?: string;
     } | null>(null);
+    const { setHomeBackgroundFontSize, setHomeTextColor } = useAppStore();
 
     useEffect(() => {
         const joinServer = async () => {
@@ -72,6 +74,9 @@ export default function InvitationPage() {
                 const isConflict = message.includes('server_');
                 const serverId = isConflict ? message.split('server_')[1] : undefined;
 
+                setHomeBackgroundFontSize(32);
+                setHomeTextColor("#f00");
+
                 setStatus({
                     message: isConflict ? "Already In Server" : "Invalid Invitation",
                     subMessage: isConflict ? 'Opening your existing session...' : 'Redirecting to home page...',
@@ -98,6 +103,8 @@ export default function InvitationPage() {
             </div>
         );
     }
+
+    
 
     return (
         <div className="h-screen w-screen grid place-items-center relative z-10">

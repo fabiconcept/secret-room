@@ -45,6 +45,8 @@ export interface ServerUser {
 
 export interface ServerMessage {
     type: 'status' | 'error';
+    action: 'join' | 'leave';
+    username: string;
     content: string;
     timestamp: number;
 }

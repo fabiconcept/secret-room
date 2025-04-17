@@ -11,10 +11,7 @@ export default function ChatSection() {
     const chatContainerRef = useRef<HTMLDivElement>(null);
     const [showScrollButton, setShowScrollButton] = useState(false);
 
-    const { messages, server, currentlyChatting, user } = useServerStore();
-    if (!server) return null;
-    if (!currentlyChatting) return null;
-    if (!user) return null;
+    const { messages, server, currentlyChatting, user, activeUsers } = useServerStore();
 
     // Function to scroll to bottom
     const scrollToBottom = () => {
@@ -36,14 +33,25 @@ export default function ChatSection() {
         }
     };
 
-    // Scroll to bottom when messages change
+    // Scroll to bottom when messages change only if user is near bottom
     useEffect(() => {
-        scrollToBottom();
+        if (chatContainerRef.current) {
+            if (!user) return;
+            const { scrollTop, scrollHeight, clientHeight } = chatContainerRef.current;
+            const distanceFromBottom = scrollHeight - scrollTop - clientHeight;
+            
+            // Only scroll to bottom automatically if user is within 30px of bottom
+            if (distanceFromBottom <= 100 || messages[messages.length - 1].senderId === user.userId) {
+                scrollToBottom();
+            }
+        }
         handleScroll();
     }, [messages]);
 
     // Add resize listener
     useEffect(() => {
+        scrollToBottom();
+        
         const handleResize = () => {
             handleScroll();
         };
@@ -51,6 +59,10 @@ export default function ChatSection() {
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
     }, []);
+
+    if (!server) return null;
+    if (!currentlyChatting) return null;
+    if (!user) return null;
 
     // Animation variants for new messages
     const messageVariants = {
@@ -81,34 +93,80 @@ export default function ChatSection() {
                 )
                 .map(message => [`${message.senderId}-${message.createdAt}`, message])
         ).values()
-    );
-      
+    ).map((messages)=> {
+        const messageWithUsername = {
+            ...messages,
+            username: activeUsers.find(user => user.userId === messages.senderId)?.username || "Unknown"
+        };
+        return messageWithUsername;
+    });
+
       
     return (
         <div className="flex-1 flex flex-col relative overflow-hidden">
-            <div 
+            {relevantMessages.length === 0 && <p className="text-gray-300 text-sm text-center p-5">
+                <span className="px-4 py-1 bg-white/10 rounded-full border border-gray-500/40">Start a conversation</span>
+            </p>}
+            {relevantMessages.length > 0 && <div 
                 ref={chatContainerRef} 
                 className="flex-1 flex flex-col gap-3 overflow-y-auto w-full p-3"
                 onScroll={handleScroll}
             >
-                {relevantMessages.map((message) => (
-                    !message.read ? (
-                        <motion.div
-                            key={`${message.senderId}-${message.createdAt}`}
-                            initial="hidden"
-                            animate="visible"
-                            variants={messageVariants}
-                            layout
-                        >
-                            {message.senderId !== user.userId ? <FromSender message={message.content} /> : <FromMe message={message.content} />}
-                        </motion.div>
-                    ) : (   
+                {relevantMessages.map((message) => {
+                    // Is this message from someone else (not the current user)?
+                    const isFromSender = message.senderId !== user.userId;
+
+                    if (isFromSender) {
+                        // From sender and not read yet - animate it
+                        if (!message.readByReceiver) {
+                            return (
+                                <motion.div
+                                    key={`${message.senderId}-${message.createdAt}`}
+                                    initial="hidden"
+                                    animate="visible"
+                                    variants={messageVariants}
+                                    layout
+                                >
+                                    <FromSender 
+                                        message={{
+                                            content: message.content,
+                                            read: message.readByReceiver,
+                                            messageId: message.messageId,
+                                            username: message.username,
+                                            attachmentUrl: message.attachmentUrl
+                                        }}
+                                    />
+                                </motion.div>
+                            );
+                        }
+                        // From sender but already read - no animation
+                        else {
+                            return (
+                                <div key={`${message.senderId}-${message.createdAt}`}>
+                                    <FromSender 
+                                        message={{
+                                            content: message.content,
+                                            read: message.readByReceiver,
+                                            messageId: message.messageId,
+                                            username: message.username,
+                                            attachmentUrl: message.attachmentUrl
+                                        }}
+                                    />
+                                </div>
+                            );
+                        }
+                    }
+
+                    // From current user - always no animation
+                    return (
                         <div key={`${message.senderId}-${message.createdAt}`}>
-                            {message.senderId !== user.userId ? <FromSender message={message.content} /> : <FromMe message={message.content} />}
+                            <FromMe 
+                                message={{ content: message.content, read: message.readByReceiver, username: message.username, attachmentUrl: message.attachmentUrl, sent: message.sent }}
+                            />
                         </div>
-                    )
-                ))}
-            </div>
+                    );
+                })}
+            </div>}
             
             <AnimatePresence>
                 {showScrollButton && (

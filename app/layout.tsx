@@ -34,13 +34,13 @@ export default function RootLayout({
         <Toaster
           position="top-center"
           toastOptions={{
-            duration: 5000,
+            duration: 2000,
           }}
 
         />
         <div className="bg absolute h-screen w-screen top-0 left-0"></div>
         <HomeBackground />
-        {/* <SoundTrack /> */}
+        <SoundTrack />
         <SocketProvider>
           {children}
         </SocketProvider>

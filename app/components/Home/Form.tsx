@@ -23,13 +23,13 @@ const initialState: FormState = {
 };
 
 export default function Form() {
+    const router = useRouter();
     const [placeholderName, setPlaceholderName] = useState('');
     const [serverName, setServerName] = useState('');
     const [encryptionKey, setEncryptionKey] = useState('');
     const [lifespan, setLifespan] = useState(60); // Default 1 hour
     const [state, setState] = useState<FormState>(initialState);
 
-    const router = useRouter();
 
     const handleGenerateNewServerName = useCallback(() => {
         if (state.isLoading) return;
@@ -37,7 +37,7 @@ export default function Form() {
         const newServerName = generateServerName({
             maxLength: 32,
             includeLocation: true,
-            includeSuffix: true,
+            includeSuffix: false,
             separator: '-'
         });
         setPlaceholderName(newServerName);
@@ -68,7 +68,7 @@ export default function Form() {
         setPlaceholderName(generateServerName({
             maxLength: 32,
             includeLocation: true,
-            includeSuffix: true,
+            includeSuffix: false,
             separator: '-'
         }));
     }, [serverName]);

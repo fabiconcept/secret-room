@@ -1,68 +1,30 @@
 'use client';
 
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import useSoundEffect from '@/utils/Hooks/useSoundEffect';
+import React from 'react';
 
 export default function SoundTrack() {
-    const audioRef = useRef<HTMLAudioElement | null>(null);
-    const [isPlaying, setIsPlaying] = useState(false);
-    const hasInteractedRef = useRef(false);
+    const playSound = useSoundEffect('/audio/sound-track.mp3', { 
+        volume: 0.025, 
+        preload: true, 
+        loop: true,
+        autoplay: true
+    });
+    const playGlitchSound = useSoundEffect('/audio/flickering.mp3', { 
+        volume: 0.05, 
+        preload: true, 
+        maxInterval: 2000,
+    });
 
-    const togglePlay = useCallback(async () => {
-        if (!audioRef.current) return;
-
-        try {
-            if (audioRef.current.paused) {
-                await audioRef.current.play();
-            } else {
-                audioRef.current.pause();
-            }
-        } catch (err) {
-            console.error('Audio playback error:', err);
+    const togglePlay = () => {
+        if (playSound.isPlaying) {
+            playSound.stop();
+            playGlitchSound.stop();
+        } else {
+            playSound.play();
+            playGlitchSound.startRandom();
         }
-    }, []);
-
-    useEffect(() => {
-        // Create and configure audio element
-        const audio = new Audio('/audio/sound-track.mp3');
-        audio.loop = true;
-        audio.volume = 0.05;
-        audioRef.current = audio;
-
-        // Add event listeners to sync state
-        audio.addEventListener('play', () => setIsPlaying(true));
-        audio.addEventListener('pause', () => setIsPlaying(false));
-
-        // Function to handle any user interaction
-        const handleInteraction = async () => {
-            if (!hasInteractedRef.current && audioRef.current?.paused) {
-                hasInteractedRef.current = true;
-                try {
-                    await audioRef.current.play();
-                } catch (err) {
-                    console.error('Audio playback error:', err);
-                }
-            }
-        };
-
-        // Listen for common interaction events
-        const events = ['click', 'touchstart', 'keydown', 'scroll', 'mousemove'];
-        events.forEach(event => {
-            document.addEventListener(event, handleInteraction, { once: true });
-        });
-
-        // Cleanup
-        return () => {
-            if (audioRef.current) {
-                audioRef.current.pause();
-                audioRef.current.removeEventListener('play', () => setIsPlaying(true));
-                audioRef.current.removeEventListener('pause', () => setIsPlaying(false));
-                audioRef.current = null;
-            }
-            events.forEach(event => {
-                document.removeEventListener(event, handleInteraction);
-            });
-        };
-    }, []);
+    }
 
     return (
         <button
@@ -71,7 +33,7 @@ export default function SoundTrack() {
         >
             <span className="sr-only">Toggle Sound</span>
             {/* Sound icon */}
-            {!isPlaying ? (
+            {!playSound.isPlaying ? (
                 <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 group-active:rotate-12 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />

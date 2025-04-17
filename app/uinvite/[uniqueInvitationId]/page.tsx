@@ -7,6 +7,7 @@ import { getUniqueFingerprint } from '@/utils';
 import { getItem, setItem } from '@/utils/localStorage';
 import { Auth } from '@/app/types/index.type';
 import TypeWriter from '@/app/components/TypeWriter';
+import { useAppStore } from '@/store/useAppStore';
 
 export default function UniqueInvitationPage() {
     const params = useParams();
@@ -17,6 +18,7 @@ export default function UniqueInvitationPage() {
         isError: boolean;
         serverId?: string;
     } | null>(null);
+    const { setHomeBackgroundFontSize, setHomeTextColor } = useAppStore();
 
     useEffect(() => {
         const joinServer = async () => {
