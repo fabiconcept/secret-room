@@ -7,10 +7,11 @@ import ServerProvider from "./components/ServerProvider";
 import ChatSection from "./components";
 import { getItem } from "@/utils/localStorage";
 import { redirect, useParams } from "next/navigation";
+import { ServerResponse } from "@/app/types/server.types";
 
 export default function Page() {
     const { serverId } = useParams();
-    const [server, setServer] = useState<any>(null);
+    const [server, setServer] = useState<ServerResponse | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -23,7 +24,7 @@ export default function Page() {
                     username: '',
                     token: ''
                 };
-                const auth = getItem<any>(serverId as string, authFallback);
+                const auth = getItem<typeof authFallback>(serverId as string, authFallback);
 
                 console.log({
                     auth
@@ -35,8 +36,8 @@ export default function Page() {
 
                 const { data: serverData } = await apiService.getServer(serverId as string, auth.userId, auth.token);
                 setServer(serverData);
-            } catch (error: any) {
-                setError(error.message || 'Failed to fetch server');
+            } catch (error) {
+                setError(error instanceof Error ? error.message : 'Failed to fetch server');
                 setTimeout(() => {
                     redirect('/');
                 }, 3000);

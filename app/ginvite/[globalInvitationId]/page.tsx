@@ -69,8 +69,8 @@ export default function InvitationPage() {
                 // Auto redirect to server
                 setTimeout(() => router.push(`/${response.data.serverId}`), 1500);
 
-            } catch (error: any) {
-                const message = error.message || 'This invitation link is no longer valid.';
+            } catch (error) {
+                const message = error instanceof Error ? error.message : 'This invitation link is no longer valid.';
                 const isConflict = message.includes('server_');
                 const serverId = isConflict ? message.split('server_')[1] : undefined;
 

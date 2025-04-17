@@ -81,7 +81,7 @@ export default function Form() {
 
     const encryptionKeyHint = (
         <span className="mt-2 text-xs text-gray-500">
-            This key will be used to encrypt your server's communications.
+            This key will be used to encrypt your server&lsquo;s communications.
         </span>
     );
 

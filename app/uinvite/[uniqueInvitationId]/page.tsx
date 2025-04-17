@@ -7,7 +7,6 @@ import { getUniqueFingerprint } from '@/utils';
 import { getItem, setItem } from '@/utils/localStorage';
 import { Auth } from '@/app/types/index.type';
 import TypeWriter from '@/app/components/TypeWriter';
-import { useAppStore } from '@/store/useAppStore';
 
 export default function UniqueInvitationPage() {
     const params = useParams();
@@ -18,7 +17,6 @@ export default function UniqueInvitationPage() {
         isError: boolean;
         serverId?: string;
     } | null>(null);
-    const { setHomeBackgroundFontSize, setHomeTextColor } = useAppStore();
 
     useEffect(() => {
         const joinServer = async () => {
@@ -69,8 +67,8 @@ export default function UniqueInvitationPage() {
                 // Auto redirect to server
                 setTimeout(() => router.push(`/${response.data.serverId}`), 1500);
 
-            } catch (error: any) {
-                const message = error.message || 'This invitation link is no longer valid.';
+            } catch (error) {
+                const message = error instanceof Error ? error.message : 'This invitation link is no longer valid.';
                 const isConflict = message.includes('server_');
                 const serverId = isConflict ? message.split('server_')[1] : undefined;
 

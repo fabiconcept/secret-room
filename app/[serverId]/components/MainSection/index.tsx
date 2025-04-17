@@ -29,7 +29,7 @@ export default function MainSection() {
                     token: ''
                 };
     
-                const auth = getItem<any>(serverId, authFallback);
+                const auth = getItem<typeof authFallback>(serverId, authFallback);
                 await apiService.deleteServer(serverId, auth.token);
 
                 router.push('/');

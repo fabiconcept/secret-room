@@ -7,6 +7,7 @@ import SirvClient from "@/utils/services/sirv.service";
 import { socketService } from "@/utils/services/socket.service";
 import clsx from "clsx";
 import { AnimatePresence, motion } from "framer-motion";
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { FaPaperclip, FaSpinner, FaX } from "react-icons/fa6";
@@ -58,6 +59,7 @@ export default function ChatBox() {
                     payload.attachmentUrl = attachmentUrl;
                 } catch (error) {
                     toast.error('Failed to upload attachment');
+                    console.error(error);
                     return;
                 } finally {
                     setAttachFile(null);
@@ -118,7 +120,13 @@ export default function ChatBox() {
                             }}
                             className="absolute -top-24 text-sm left-3 h-20 w-16 p-1 rounded-lg border border-gray-500/20 bg-white/5">
                             {attachFile.type.startsWith('image') ? (
-                                <img src={URL.createObjectURL(attachFile)} alt="" className="w-full h-full object-cover cursor-pointer" />
+                                <Image 
+                                    src={URL.createObjectURL(attachFile)} 
+                                    alt="" 
+                                    className="w-full h-full object-cover cursor-pointer" 
+                                    width={64}
+                                    height={80}
+                                />
                             ) : (
                                 <div className="w-full h-full flex items-center gap-1 flex-col bg-red-500/25 cursor-pointer rounded-lg justify-center">
                                     <FaPaperclip className="text-white" />

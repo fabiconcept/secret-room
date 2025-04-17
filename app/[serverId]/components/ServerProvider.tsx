@@ -32,7 +32,7 @@ const ErrorDisplay = ({ error }: { error: string }) => (
 );
 
 export default function ServerProvider({ children, server }: ServerProviderProps) {
-    const { setServer, setUser, setError, setLoading, clearServer, setActiveUsers, isOwner, user, error, isLoading, setIsOwner, setCurrentlyChatting, addMessage, onMessageRead, populateMessages } = useServerStore();
+    const { setServer, setUser, setError, setLoading, clearServer, setActiveUsers, isOwner, error, isLoading, setIsOwner, setCurrentlyChatting, addMessage, onMessageRead, populateMessages } = useServerStore();
     const { server_id } = server;
     const { setHomeBackgroundFontSize } = useAppStore();
 
@@ -151,8 +151,8 @@ export default function ServerProvider({ children, server }: ServerProviderProps
                     onMessageRead(messageId);
                 });
 
-            } catch (error: any) {
-                setError(error.message || 'Failed to initialize server state');
+            } catch (error) {
+                setError(error instanceof Error ? error.message : 'Failed to initialize server state');
                 clearServer();
             } finally {
                 setLoading(false);

@@ -14,7 +14,7 @@ interface UserCardProps {
     textColor: string;
 }
 
-export default function UserCard({ userId, username, isOnline, lastSeen, bgColor, textColor }: UserCardProps) {
+export default function UserCard({ userId, username, isOnline, bgColor, textColor }: UserCardProps) {
     const { server, messages, setCurrentlyChatting, activeUsers } = useServerStore();
     const playOpenSound = useSoundEffect('/audio/open.mp3', { volume: 0.5, preload: true });
 

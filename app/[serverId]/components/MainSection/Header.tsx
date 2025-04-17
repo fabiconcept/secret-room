@@ -1,7 +1,6 @@
 import { useServerStore } from "@/store/useServerStore";
 import clsx from "clsx";
-import { FaPhoneAlt } from "react-icons/fa";
-import { FaArrowLeftLong, FaDoorOpen, FaInfo, FaVideo } from "react-icons/fa6";
+import { FaArrowLeftLong, FaDoorOpen } from "react-icons/fa6";
 import { useAppStore } from "@/store/useAppStore";
 import { socketService } from "@/utils/services/socket.service";
 import { formatLastSeen } from "@/utils";

@@ -26,9 +26,9 @@ export default function TypeWriter({ text, className = '', speed = 50, onComplet
             return;
         }
 
-        let currentText = displayText;
+        const currentText = displayText;
         const currentLineText = lines[currentLine];
-        let currentChar = currentText.split('\n')[currentLine]?.length || 0;
+        const currentChar = currentText.split('\n')[currentLine]?.length || 0;
 
         if (currentChar >= currentLineText.length) {
             // Move to next line after a pause
