@@ -129,7 +129,12 @@ export default function FromSender({
                     </div>
                 </div>
                 {!isEmoji ? (
-                    messageIsChatAcronym ? <div className="text-5xl font-bold uppercase">
+                    messageIsChatAcronym ? <div 
+                        className="font-bold uppercase max-sm:-mb-2.5"
+                        style={{
+                            fontSize: "32px"
+                        }}
+                    >
                         {message.content}
                     </div> :
                         <div
@@ -142,11 +147,16 @@ export default function FromSender({
                             }}
                         />
                 ) : (
-                    <div className={clsx(
-                        "md:max-w-1/2 max-w-[100%]",
-                        "z-10 relative",
-                        emojiCount > 1 ? "text-5xl" : "text-9xl -mb-3"
-                    )}>
+                    <div 
+                        className={clsx(
+                            "md:max-w-1/2 max-w-[100%]",
+                            "z-10 relative",
+                            emojiCount > 1 ? "" : "-mb-5 max-sm:-mb-9"
+                        )} 
+                        style={{
+                            fontSize: emojiCount > 1 ? "32px" : "90px"
+                        }}
+                    >
                         {message.content}
                     </div>
                 )}

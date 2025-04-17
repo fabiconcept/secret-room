@@ -109,7 +109,7 @@ export default function ChatSection() {
             </p>}
             {relevantMessages.length > 0 && <div 
                 ref={chatContainerRef} 
-                className="flex-1 flex flex-col gap-3 overflow-y-auto w-full p-3"
+                className="flex-1 flex flex-col gap-3 max-sm:gap-5 overflow-y-auto w-full p-3"
                 onScroll={handleScroll}
             >
                 {relevantMessages.map((message) => {
