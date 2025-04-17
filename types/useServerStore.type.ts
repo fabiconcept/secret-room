@@ -30,4 +30,5 @@ export interface ServerState {
     clearServer: () => void;
     setCurrentlyChatting: (user: ServerUser) => void;
     removeCurrentlyChatting: () => void;
+    onMessageRead: (messageId: string) => void;
 }

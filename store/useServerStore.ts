@@ -32,5 +32,6 @@ export const useServerStore = create<ServerState>((set) => ({
         isLoading: false
     }),
     setCurrentlyChatting: (user) => set({ currentlyChatting: user }),
-    removeCurrentlyChatting: () => set({ currentlyChatting: null })
+    removeCurrentlyChatting: () => set({ currentlyChatting: null }),
+    onMessageRead: (messageId) => set(state => ({ messages: state.messages.map(message => message.messageId === messageId ? { ...message, readByReceiver: true } : message) }))
 }));
