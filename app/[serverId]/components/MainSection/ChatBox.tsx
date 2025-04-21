@@ -82,7 +82,7 @@ export default function ChatBox() {
 
         const file = e[0];
         const maxSize = 10 * 1024 * 1024;
-        const acceptableFileTypes = ["application/pdf", "image/jpeg", "image/png", "image/jpg", "image/webp", "image/gif"]
+        const acceptableFileTypes = ["application/pdf", "image/jpeg", "image/png", "image/jpg", "image/webp", "image/gif", "video/mp4"]
 
         if (file.size > maxSize) {
             toast.error("File is too large!");
@@ -118,7 +118,7 @@ export default function ChatBox() {
                                 duration: 0.05,
                                 ease: "easeOut"
                             }}
-                            className="absolute -top-24 text-sm left-3 h-20 w-16 p-1 rounded-lg border border-gray-500/20 bg-white/5">
+                            className="absolute -top-24 text-sm left-3 h-20 w-16 p-1 rounded-lg border border-gray-500/20 bg-white/5 z-[999]">
                             {attachFile.type.startsWith('image') ? (
                                 <Image 
                                     src={URL.createObjectURL(attachFile)} 
