@@ -33,7 +33,7 @@ export default function ChatBox() {
         if (!currentlyChatting) return null;
         if (isUploading) return null;
 
-        
+
         if (message.trim() !== '') {
             setMessage('');
             playSwingSound.play();
@@ -76,18 +76,18 @@ export default function ChatBox() {
             toast.error("Please select a valid file!");
             return;
         }
-        
+
         const file = e[0];
         const maxSize = 10 * 1024 * 1024;
-        const acceptableFileTypes = ["application/pdf", "image/jpeg", "image/png", "image/jpg", "image/webp", "image/gif", "video/mp4", "video/mpeg", "audio/mp3", "audio/mpeg", "audio/wav"]
+        const acceptableFileTypes = ["application/pdf", "image/jpeg", "image/png", "image/jpg", "image/webp", "image/gif", "video/mp4", "video/webm"]
 
         if (file.size > maxSize) {
-            toast.error("File is too large!");
+            toast.error("File is too large!", { duration: 5000 });
             return;
         }
 
         if (!acceptableFileTypes.includes(file.type)) {
-            toast.error("This file is not supported!")
+            toast.error(`This ${file.type} is not supported!`, { duration: 5000 })
             return;
         }
 
@@ -97,8 +97,8 @@ export default function ChatBox() {
         setAttachFile(file);
     }
 
-    useEffect(()=>{
-        if(!textInputRef.current) return; 
+    useEffect(() => {
+        if (!textInputRef.current) return;
         textInputRef.current.focus();
     }, [textInputRef])
 
@@ -115,24 +115,12 @@ export default function ChatBox() {
                                 duration: 0.05,
                                 ease: "easeOut"
                             }}
-                            className="absolute -top-24 text-sm left-3 h-20 w-16 p-1 rounded-lg border border-gray-500/20 bg-white/5">
-                            {attachFile.type.startsWith('image') ? (
-                                <Image 
-                                    src={URL.createObjectURL(attachFile)} 
-                                    alt="" 
-                                    className="w-full h-full object-cover cursor-pointer" 
-                                    width={64}
-                                    height={80}
-                                />
-                            ) : (
-                                <div className="w-full h-full flex items-center gap-1 flex-col bg-red-500/25 cursor-pointer rounded-lg justify-center">
-                                    <FaPaperclip className="text-white" />
-                                    <span className="text-white text-xs">PDF</span>
-                                </div>
-                            )}
-                            <button 
-                                className="absolute -top-1 -right-1 bg-red-500/50 p-1 rounded-full border border-red-500/10 hover:bg-red-500 hover:text-white cursor-pointer active:scale-90 text-white" 
-                                title="Remove attachment" 
+                            className="absolute -top-32 text-sm left-3 h-28 w-20 p-1 rounded-lg border border-gray-500/20 bg-white/5"
+                        >
+                            <RenderFileType file={attachFile} />
+                            <button
+                                className="absolute -top-1 -right-1 bg-red-500/50 p-1 rounded-full border border-red-500/10 hover:bg-red-500 hover:text-white cursor-pointer active:scale-90 text-white"
+                                title="Remove attachment"
                                 onClick={() => {
                                     setAttachFile(null);
                                     playCloseSound.play();
@@ -161,7 +149,7 @@ export default function ChatBox() {
                     ref={textInputRef}
                 />
 
-                <button 
+                <button
                     className="bg-white/5 border aspect-square grid place-items-center border-gray-500/20 rounded-3xl h-10 cursor-pointer hover:bg-white/10 hover:border-white/40 active:scale-90 absolute right-1.5 top-1/2 -translate-y-1/2"
                     title="Attach a file"
                     onClick={() => {
@@ -169,7 +157,7 @@ export default function ChatBox() {
                         fileInputRef.current?.click()
                     }}
                 >
-                    <FaPaperclip className="text-white" />
+                    <FaPaperclip className="text-white text-lg" />
                     <input
                         type="file"
                         className="hidden"
@@ -190,9 +178,57 @@ export default function ChatBox() {
                         "ml-3 z-10 border border-gray-500/20 rounded-full px-8",
                         message.trim() === '' || isUploading ? 'bg-gray-500 cursor-not-allowed' : 'cursor-pointer bg-green-600 hover:bg-green-500 active:scale-90 hover:border-white/20'
                     )}>
-                    {isUploading ? <FaSpinner className="text-white animate-spin text-5xl py-2"/> : <p className="py-3">Send</p>}
+                    {isUploading ? <FaSpinner className="text-white animate-spin text-5xl py-2" /> : <p className="py-3">Send</p>}
                 </button>
             </div>
+        </div>
+    )
+}
+
+const RenderFileType = ({ file }: { file: File }) => {
+    const fileType = file.type;
+    const fileSize = file.size;
+
+    if (fileType.startsWith('image')) {
+        return (
+            <Image
+                src={URL.createObjectURL(file)}
+                alt=""
+                className="w-full h-full object-cover cursor-pointer"
+                width={64}
+                height={80}
+            />
+        )
+    }
+
+    if (fileType.startsWith('video')) {
+        return (
+            <div className="w-full h-full flex items-center gap-1 flex-col bg-gray-500/25 cursor-pointer rounded-lg justify-center">
+                <FaPaperclip className="text-white text-lg" />
+                <span className="text-white text-xs">Video</span>
+                {/* file size in mb */}
+                <span className="text-white text-xs">{(fileSize / 1024 / 1024).toFixed()}MB</span>
+            </div>
+        )
+    }
+
+    if (fileType.startsWith('audio')) {
+        return (
+            <div className="w-full h-full flex items-center gap-1 flex-col bg-gray-500/25 cursor-pointer rounded-lg justify-center">
+                <FaPaperclip className="text-white text-lg" />
+                <span className="text-white text-xs">Audio</span>
+                {/* file size in mb */}
+                <span className="text-white text-xs">{(fileSize / 1024 / 1024).toFixed()}MB</span>
+            </div>
+        )
+    }
+    
+    return (
+        <div className="w-full h-full flex items-center gap-1 flex-col bg-red-500/25 cursor-pointer rounded-lg justify-center">
+            <FaPaperclip className="text-white text-lg" />
+            <span className="text-white text-xs">PDF</span>
+            {/* file size in mb */}
+            <span className="text-white text-xs">{(fileSize / 1024 / 1024).toFixed()}MB</span>
         </div>
     )
 }
