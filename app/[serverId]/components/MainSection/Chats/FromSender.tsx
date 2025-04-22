@@ -13,7 +13,7 @@ export default function FromSender({
 }: {
     message: { content: string, read: boolean, messageId: string, username: string, attachmentUrl?: string }
 }) {
-    const playSwingSound = useSoundEffect('/audio/swing.mp3', { volume: 0.5, preload: true });
+    const playSwingSound = useSoundEffect('/audio/press.mp3', { volume: 0.5, preload: true });
 
     // useInView hook provides a ref and inView status
     const messageRef = useRef<HTMLDivElement>(null);

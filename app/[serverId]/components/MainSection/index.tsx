@@ -13,7 +13,7 @@ import { FaTrash } from "react-icons/fa6";
 export default function MainSection() {
     const { server, currentlyChatting, isOwner } = useServerStore();
     const router = useRouter();
-    const playSwingSound = useSoundEffect('/audio/swing.mp3', { volume: 0.5, preload: true });
+    const playSwingSound = useSoundEffect('/audio/press.mp3', { volume: 0.5, preload: true });
 
     
     if (!server) return null;

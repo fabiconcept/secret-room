@@ -17,7 +17,7 @@ import useSoundEffect from "@/utils/Hooks/useSoundEffect";
 export default function SideBar() {
     const { server, activeUsers, isOwner, currentlyChatting, messages } = useServerStore();
     const { sideBarExpanded, setSideBarExpanded } = useAppStore();
-    const playSwingSound = useSoundEffect('/audio/swing.mp3', { volume: 0.5, preload: true });
+    const playSwingSound = useSoundEffect('/audio/press.mp3', { volume: 0.5, preload: true });
 
     
     useEffect(() => {

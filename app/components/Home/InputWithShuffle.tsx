@@ -29,7 +29,7 @@ export const InputWithShuffle: React.FC<InputWithShuffleProps> = ({
     disabled,
     hint
 }) => {
-    const playSwingSound = useSoundEffect('/audio/swing.mp3', { volume: 0.5, preload: true });
+    const playSwingSound = useSoundEffect('/audio/press.mp3', { volume: 0.5, preload: true });
     const playClickSound = useSoundEffect('/audio/click.mp3', { volume: 0.25, preload: true });
 
 

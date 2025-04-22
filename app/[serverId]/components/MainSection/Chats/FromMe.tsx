@@ -10,7 +10,7 @@ export default function FromMe({
 }: {
     message: { content: string, read: boolean, username: string, attachmentUrl?: string, sent: boolean }
 }) {
-    const playSwingSound = useSoundEffect('/audio/swing.mp3', { volume: 0.5, preload: true });
+    const playSwingSound = useSoundEffect('/audio/press.mp3', { volume: 0.5, preload: true });
 
     const isEmoji = isOnlyEmojis(message.content);
     const emojiCount = countEmojis(message.content);

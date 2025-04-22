@@ -5,7 +5,7 @@ import useSoundEffect from "@/utils/Hooks/useSoundEffect";
 import React from 'react'
 
 export default function Button({ text, onClick }: { text: string, onClick: () => void }) {
-    const playSwingSound = useSoundEffect('/audio/swing.mp3', { volume: 0.5, preload: true });
+    const playSwingSound = useSoundEffect('/audio/press.mp3', { volume: 0.5, preload: true });
 
     return (
         <button onClick={()=>{
