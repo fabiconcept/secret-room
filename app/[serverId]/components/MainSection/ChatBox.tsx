@@ -18,7 +18,7 @@ export default function ChatBox() {
     const [attachFile, setAttachFile] = useState<File | null>(null);
 
     const playClickSound = useSoundEffect('/audio/click.mp3', { volume: 0.25, preload: true });
-    const playSwingSound = useSoundEffect('/audio/swing.mp3', { volume: 0.5, preload: true });
+    const playSwingSound = useSoundEffect('/audio/press.mp3', { volume: 0.5, preload: true });
     const playPopUpSound = useSoundEffect('/audio/pop-up.mp3', { volume: 0.5, preload: true });
     const playCloseSound = useSoundEffect('/audio/close.mp3', { volume: 0.5, preload: true });
 
@@ -32,8 +32,6 @@ export default function ChatBox() {
         if (!user) return null;
         if (!currentlyChatting) return null;
         if (isUploading) return null;
-
-        console.log("message")
 
         
         if (message.trim() !== '') {
@@ -79,10 +77,9 @@ export default function ChatBox() {
             return;
         }
         
-
         const file = e[0];
         const maxSize = 10 * 1024 * 1024;
-        const acceptableFileTypes = ["application/pdf", "image/jpeg", "image/png", "image/jpg", "image/webp", "image/gif", "video/mp4"]
+        const acceptableFileTypes = ["application/pdf", "image/jpeg", "image/png", "image/jpg", "image/webp", "image/gif", "video/mp4", "video/mpeg", "audio/mp3", "audio/mpeg", "audio/wav"]
 
         if (file.size > maxSize) {
             toast.error("File is too large!");
@@ -106,7 +103,7 @@ export default function ChatBox() {
     }, [textInputRef])
 
     return (
-        <div className="flex items-end md:p-5 p-3 pt-0 bg-white/5 border-t border-gray-500/20">
+        <div className="flex items-end md:p-5 p-3 pt-0 bg-white/5 border-t border-gray-500/20 z-[999]">
             <div className="flex flex-1 gap-3 relative">
                 <AnimatePresence>
                     {attachFile && !isUploading && (
@@ -118,7 +115,7 @@ export default function ChatBox() {
                                 duration: 0.05,
                                 ease: "easeOut"
                             }}
-                            className="absolute -top-24 text-sm left-3 h-20 w-16 p-1 rounded-lg border border-gray-500/20 bg-white/5 z-[999]">
+                            className="absolute -top-24 text-sm left-3 h-20 w-16 p-1 rounded-lg border border-gray-500/20 bg-white/5">
                             {attachFile.type.startsWith('image') ? (
                                 <Image 
                                     src={URL.createObjectURL(attachFile)} 
