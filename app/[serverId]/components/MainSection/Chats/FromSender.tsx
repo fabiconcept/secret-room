@@ -14,8 +14,6 @@ export default function FromSender({
 }: {
     message: { content: string, read: boolean, messageId: string, username: string, attachmentUrl?: string }
 }) {
-    const playSwingSound = useSoundEffect('/audio/press.mp3', { volume: 0.5, preload: true });
-
     // useInView hook provides a ref and inView status
     const messageRef = useRef<HTMLDivElement>(null);
 
@@ -23,10 +21,6 @@ export default function FromSender({
     const emojiCount = countEmojis(message.content);
 
     const messageIsChatAcronym = isChatAcronym(message.content);
-
-    const [status, startDownload] = useFileDownload();
-    
-    const attachmentIsPDF = message.attachmentUrl?.endsWith(".pdf");
 
     const inView = useInView(messageRef, {
         once: true,
