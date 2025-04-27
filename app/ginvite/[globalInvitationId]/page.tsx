@@ -8,9 +8,6 @@ import { getItem, setItem } from '@/utils/localStorage';
 import { Auth } from '@/app/types/index.type';
 import TypeWriter from '@/app/components/TypeWriter';
 import { useAppStore } from '@/store/useAppStore';
-import { GlobalInviteMetadata } from '@/utils/Metadatas/Index';
-
-export const metadata = GlobalInviteMetadata;
 
 export default function InvitationPage() {
     const params = useParams();
