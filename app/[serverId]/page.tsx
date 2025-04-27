@@ -8,6 +8,9 @@ import ChatSection from "./components";
 import { getItem } from "@/utils/localStorage";
 import { redirect, useParams } from "next/navigation";
 import { ServerResponse } from "@/app/types/server.types";
+import { ServerMetadata } from '@/utils/Metadatas/Index';
+
+export const metadata = ServerMetadata;
 
 export default function Page() {
     const { serverId } = useParams();
