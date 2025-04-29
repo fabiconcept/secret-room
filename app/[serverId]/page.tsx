@@ -40,6 +40,8 @@ export default function Page() {
                             userId: auth.userId, 
                             serverId: serverId as string 
                         });
+
+                        console.log(refreshTokenData);
                         
                         if (refreshTokenData?.token) {
                             setItem(serverId as string, {
@@ -53,6 +55,9 @@ export default function Page() {
                                 auth.userId, 
                                 refreshTokenData.token
                             );
+
+                            console.log(serverData);
+                            
                             setServer(serverData);
                             return; // Exit the error handler after successful recovery
                         } else {
@@ -60,6 +65,7 @@ export default function Page() {
                             throw new Error('Unable to refresh session');
                         }
                     } catch (refreshError) {
+                        console.error('Refresh token error:', refreshError);
                         setError('An error occurred while refreshing the session. Please try again later.');
                         setTimeout(() => {
                             redirect('/');
