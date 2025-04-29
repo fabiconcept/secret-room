@@ -17,6 +17,7 @@ interface UserCardProps {
 export default function UserCard({ userId, username, isOnline, bgColor, textColor }: UserCardProps) {
     const { server, messages, setCurrentlyChatting, activeUsers } = useServerStore();
     const playOpenSound = useSoundEffect('/audio/open.mp3', { volume: 0.5, preload: true });
+    const playPressSound = useSoundEffect('/audio/press.mp3', { volume: 0.25, preload: true });
 
     if (!server) return null;
 
@@ -28,6 +29,7 @@ export default function UserCard({ userId, username, isOnline, bgColor, textColo
     }).filter(Boolean).pop();
 
     const handleSetCurrentlyChatting = () => {
+        playPressSound.play();
         const user = activeUsers.find((user) => user.userId === userId);
         if (!user) return;
         playOpenSound.play();
