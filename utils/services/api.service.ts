@@ -204,7 +204,7 @@ class ApiService {
                 body: JSON.stringify({ userId, serverId })
             });
 
-            console.log("Refresh token response:", response);
+            console.log("Refresh token response:", await response.json());
 
             return this.handleResponse<ApiResponse<{ token: string }>>(response);
         } catch (error) {
