@@ -60,12 +60,12 @@ export default function Page() {
                             throw new Error('Unable to refresh session');
                         }
                     } catch (refreshError) {
-                        // Handle refresh token failure
                         setError('An error occurred while refreshing the session. Please try again later.');
                         setTimeout(() => {
                             redirect('/');
                         }, 3000);
-                        return;
+                        
+                        throw refreshError;
                     }
                 }
                 setError(errorMessage);
