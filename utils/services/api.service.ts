@@ -196,11 +196,15 @@ class ApiService {
         try {
             if (!this.baseUrl) throw new Error("Missing baseUrl Variable!");
 
+            console.log("Refreshing token for user", userId, "and server", serverId);
+
             const response = await fetch(`${this.baseUrl}/auth/refresh-token`, {
                 method: 'POST',
                 headers: this.getHeaders(),
                 body: JSON.stringify({ userId, serverId })
             });
+
+            console.log("Refresh token response:", response);
 
             return this.handleResponse<ApiResponse<{ token: string }>>(response);
         } catch (error) {
