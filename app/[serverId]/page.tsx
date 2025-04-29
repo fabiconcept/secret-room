@@ -5,7 +5,7 @@ import { apiService } from "@/utils/services/api.service";
 import TypeWriter from "../components/TypeWriter";
 import ServerProvider from "./components/ServerProvider";
 import ChatSection from "./components";
-import { getItem } from "@/utils/localStorage";
+import { getItem, setItem } from "@/utils/localStorage";
 import { redirect, useParams } from "next/navigation";
 import { ServerResponse } from "@/app/types/server.types";
 
@@ -17,27 +17,58 @@ export default function Page() {
 
     useEffect(() => {
         const fetchServer = async () => {
+            const authFallback = {
+                userId: '',
+                token: ''
+            };
+            const auth = getItem<typeof authFallback>(serverId as string, authFallback);
+    
             try {
                 setIsLoading(true);
-                const authFallback = {
-                    userId: '',
-                    username: '',
-                    token: ''
-                };
-                const auth = getItem<typeof authFallback>(serverId as string, authFallback);
-
-                console.log({
-                    auth
-                })
-
+    
                 if (!auth.userId || !auth.token) {
                     redirect('/');
                 }
-
+    
                 const { data: serverData } = await apiService.getServer(serverId as string, auth.userId, auth.token);
                 setServer(serverData);
             } catch (error) {
-                setError(error instanceof Error ? error.message : 'Failed to fetch server');
+                const errorMessage = error instanceof Error ? error.message : 'Failed to fetch server';
+                if (errorMessage.toLowerCase().includes('token has expired')) {
+                    try {
+                        const { data: refreshTokenData } = await apiService.refreshToken({ 
+                            userId: auth.userId, 
+                            serverId: serverId as string 
+                        });
+                        
+                        if (refreshTokenData?.token) {
+                            setItem(serverId as string, {
+                                userId: auth.userId,
+                                token: refreshTokenData.token
+                            });
+                            
+                            // Make a new request with updated token instead of recursion
+                            const { data: serverData } = await apiService.getServer(
+                                serverId as string, 
+                                auth.userId, 
+                                refreshTokenData.token
+                            );
+                            setServer(serverData);
+                            return; // Exit the error handler after successful recovery
+                        } else {
+                            // Token refresh returned invalid data
+                            throw new Error('Unable to refresh session');
+                        }
+                    } catch (refreshError) {
+                        // Handle refresh token failure
+                        setError('An error occurred while refreshing the session. Please try again later.');
+                        setTimeout(() => {
+                            redirect('/');
+                        }, 3000);
+                        return;
+                    }
+                }
+                setError(errorMessage);
                 setTimeout(() => {
                     redirect('/');
                 }, 3000);
@@ -45,7 +76,7 @@ export default function Page() {
                 setIsLoading(false);
             }
         };
-
+    
         if (serverId) {
             fetchServer();
         }

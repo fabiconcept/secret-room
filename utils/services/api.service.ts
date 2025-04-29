@@ -191,6 +191,23 @@ class ApiService {
         }
         return new Error('An unexpected error occurred');
     }
+
+    public async refreshToken({ userId, serverId }: { userId: string, serverId: string }): Promise<ApiResponse<{ token: string }>> {
+        try {
+            if (!this.baseUrl) throw new Error("Missing baseUrl Variable!");
+
+            const response = await fetch(`${this.baseUrl}/auth/refresh-token`, {
+                method: 'POST',
+                headers: this.getHeaders(),
+                body: JSON.stringify({ userId, serverId })
+            });
+
+            return this.handleResponse<ApiResponse<{ token: string }>>(response);
+        } catch (error) {
+            console.error('API Error:', error);
+            throw this.handleError(error);
+        }
+    }
 }
 
 // Export singleton instance

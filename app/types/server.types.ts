@@ -16,6 +16,7 @@ export interface ServerResponse {
 export interface ApiResponse<T> {
     message: string;
     data: T;
+    refresh_token?: string
 }
 
 export interface CreateServerResponse<T> extends ApiResponse<T> {
