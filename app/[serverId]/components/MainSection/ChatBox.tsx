@@ -33,6 +33,11 @@ export default function ChatBox() {
         if (!currentlyChatting) return null;
         if (isUploading) return null;
 
+        socketService.emitUserNotTyping({
+            serverId: server.server_id,
+            userId: user.userId
+        });
+
 
         if (message.trim() !== '') {
             setMessage('');
@@ -100,7 +105,15 @@ export default function ChatBox() {
     useEffect(() => {
         if (!textInputRef.current) return;
         textInputRef.current.focus();
-    }, [textInputRef])
+    }, [textInputRef]);
+
+    useEffect(() => {
+        if (!server || !user || message.trim().length > 0) return;
+        socketService.emitUserNotTyping({
+            serverId: server.server_id,
+            userId: user.userId
+        });
+    }, [server, user, message]);
 
     return (
         <div className="flex items-end md:p-5 p-3 pt-0 bg-white/5 border-t border-gray-500/20 z-[999]">
@@ -136,8 +149,24 @@ export default function ChatBox() {
                     className="flex-1 bg-white/5 border border-gray-500/20 rounded-3xl px-5 py-3 focus:outline-none focus:ring-1 focus:ring-white/20 resize-none field-sizing-content max-h-32"
                     rows={1}
                     value={message}
+                    onBlur={() => {
+                        if(!server || !user) return;
+                        socketService.emitUserNotTyping({
+                            serverId: server.server_id,
+                            userId: user.userId
+                        });
+                    }}
                     onChange={(e) => {
                         playClickSound.play();
+
+                        if(!server || !user || !currentlyChatting) return;
+
+                        socketService.emitUserTyping({
+                            serverId: server.server_id,
+                            receiverId: currentlyChatting.userId,
+                            userId: user.userId
+                        });
+                        
                         setMessage(e.target.value)
                     }}
                     onKeyDown={(e) => {

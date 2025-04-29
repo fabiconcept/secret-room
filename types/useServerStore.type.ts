@@ -13,6 +13,7 @@ export interface ServerState {
     user: User | null;
     isOwner: boolean;
     activeUsers: ServerUser[];
+    typingUsers: string[];
     error: string | null;
     isLoading: boolean;
     currentlyChatting: ServerUser | null;
@@ -31,4 +32,6 @@ export interface ServerState {
     setCurrentlyChatting: (user: ServerUser) => void;
     removeCurrentlyChatting: () => void;
     onMessageRead: (messageId: string) => void;
+    addTypingUser: (userId: string) => void;
+    removeTypingUser: (userId: string) => void;
 }

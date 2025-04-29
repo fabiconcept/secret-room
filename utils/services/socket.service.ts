@@ -15,6 +15,7 @@ interface ServerToClientEvents {
     'active_users_updated': (users: ServerUser[]) => void;
     'server_deleted': () => void;
     'user_status_changed': (update: { userId: string; isOnline: boolean }) => void;
+    'user_typing': (payload: {userId: string, typing: boolean, typingTo: string}) => void;
 }
 
 interface ClientToServerEvents {
@@ -22,6 +23,8 @@ interface ClientToServerEvents {
     'leave_server': (serverId: string) => void;
     'new-message': (serverId: string, message: Omit<Message, 'messageId'>) => void;
     'mark_message_read': (messageId: string) => void;
+    'typing': (serverId: string, receiverId: string, userId: string) => void;
+    'not_typing': (serverId: string, userId: string) => void;
 }
 
 class SocketService {
@@ -107,11 +110,6 @@ class SocketService {
     private setupEventListeners(): void {
         if (!this.socket) return;
 
-        // Connection events
-        this.socket.on('connect', () => {
-            console.log('Socket connected:', this.socket?.id);
-        });
-
         this.socket.on('disconnect', (reason) => {
             console.log('Socket disconnected:', reason);
             this.currentServerId = null;
@@ -120,47 +118,6 @@ class SocketService {
         this.socket.on('connect_error', (error) => {
             console.error('Socket connection error:', error);
             this.currentServerId = null;
-        });
-
-        // Server events
-        this.socket.on('server_message', (message) => {
-            console.log('Server message:', message);
-        });
-        
-        this.socket.on('new-message', (message) => {
-            console.log('New message:', message);
-        });
-
-        this.socket.on('message_read', (messageId) => {
-            console.log('Message read:', messageId);
-        });
-
-        this.socket.on('server_error', (message) => {
-            console.error('Server error:', message);
-        });
-
-        this.socket.on('server_joined', (message) => {
-            console.log('Server joined:', message);
-        });
-
-        this.socket.on('server_left', (message) => {
-            console.log('Server left:', message);
-        });
-
-        this.socket.on('server_action', (message) => {
-            console.log('Server action:', message);
-        });
-
-        this.socket.on('active_users_updated', (users) => {
-            console.log('Active users updated:', users);
-        });
-
-        this.socket.on('user_status_changed', (update) => {
-            console.log('User status changed:', update);
-        });
-
-        this.socket.on('server_deleted', () => {
-            console.log('Server deleted');
         });
     }
 
@@ -205,6 +162,10 @@ class SocketService {
         this.socket?.on('server_deleted', callback);
     }
 
+    public onUserTyping(callback: (payload: { userId: string, typing: boolean, typingTo: string }) => void): void {
+        this.socket?.on('user_typing', callback);
+    }
+
     // Client to Server
     public emitNewMessage(message: Omit<Message, 'messageId'>): void {
         if (!this.socket || !this.currentServerId) return;
@@ -225,6 +186,16 @@ class SocketService {
         if (!this.socket) return;
         this.socket.removeAllListeners();
         this.setupEventListeners(); // Maintain core event listeners
+    }
+
+    public emitUserTyping({ serverId, receiverId, userId }: { serverId: string; receiverId: string, userId: string }): void {
+        if (!this.socket || !this.currentServerId) return;
+        this.socket.emit('typing', serverId, receiverId, userId);
+    }
+
+    public emitUserNotTyping({ serverId, userId }: { serverId: string; userId: string }): void {
+        if (!this.socket || !this.currentServerId) return;
+        this.socket.emit('not_typing', serverId, userId);
     }
 
     public isConnected(): boolean {

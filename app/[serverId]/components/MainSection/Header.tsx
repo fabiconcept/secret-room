@@ -7,7 +7,7 @@ import { formatLastSeen } from "@/utils";
 import useSoundEffect from "@/utils/Hooks/useSoundEffect";
 
 export default function Header() {
-    const { currentlyChatting, server, isOwner, removeCurrentlyChatting } = useServerStore();
+    const { currentlyChatting, server, isOwner, removeCurrentlyChatting, typingUsers } = useServerStore();
     const { sideBarExpanded, toggleSideBar } = useAppStore();
     const playSwingSound = useSoundEffect('/audio/press.mp3', { volume: 0.5, preload: true });
 
@@ -56,9 +56,11 @@ export default function Header() {
                 </div>
                 <div>
                     <h3 className="text-white font-semibold capitalize">{currentlyChatting.username}</h3>
-                    <p className={clsx("text-xs", currentlyChatting.isOnline ? "text-green-400" : "text-gray-400")}>{currentlyChatting.isOnline ? 'Online' : `Last seen ${formatLastSeen(new Date(currentlyChatting.lastSeen))} ago`}</p>
+                    <p className={clsx("text-xs", typingUsers.includes(currentlyChatting.userId) ? "text-orange-400 animate-pulse" : currentlyChatting.isOnline ? "text-green-400" : "text-gray-400")}>
+                        {typingUsers.includes(currentlyChatting.userId) ? 'Typing...' : currentlyChatting.isOnline ? 'Online' : `Last seen ${formatLastSeen(new Date(currentlyChatting.lastSeen))} ago`}
+                    </p>
                 </div>
-            </div>
+            </div> 
             {!isOwner && <div className="flex items-center gap-2 max-sm:hidden">
                 <header
                     className={clsx(

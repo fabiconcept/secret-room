@@ -32,7 +32,7 @@ const ErrorDisplay = ({ error }: { error: string }) => (
 );
 
 export default function ServerProvider({ children, server }: ServerProviderProps) {
-    const { setServer, setUser, setError, setLoading, clearServer, setActiveUsers, isOwner, error, isLoading, setIsOwner, setCurrentlyChatting, addMessage, onMessageRead, populateMessages } = useServerStore();
+    const { setServer, setUser, setError, setLoading, clearServer, setActiveUsers, isOwner, error, isLoading, setIsOwner, setCurrentlyChatting, addMessage, onMessageRead, populateMessages, addTypingUser, removeTypingUser } = useServerStore();
     const { server_id } = server;
     const { setHomeBackgroundFontSize } = useAppStore();
 
@@ -127,6 +127,17 @@ export default function ServerProvider({ children, server }: ServerProviderProps
                         setCurrentlyChatting(serverOwner!);
                     }
                     setActiveUsers(filteredUsers);
+                });
+
+                socketService.onUserTyping(({userId, typing, typingTo}) => {
+                    const relevantUsers = typingTo === auth.userId;
+                    if (!relevantUsers) return;
+
+                    if(typing) {
+                        addTypingUser(userId);
+                    }else{
+                        removeTypingUser(userId);
+                    }
                 });
 
                 socketService.onNewMessage((message) => {

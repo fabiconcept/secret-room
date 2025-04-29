@@ -15,7 +15,7 @@ interface UserCardProps {
 }
 
 export default function UserCard({ userId, username, isOnline, bgColor, textColor }: UserCardProps) {
-    const { server, messages, setCurrentlyChatting, activeUsers } = useServerStore();
+    const { server, messages, setCurrentlyChatting, activeUsers, typingUsers } = useServerStore();
     const playOpenSound = useSoundEffect('/audio/open.mp3', { volume: 0.5, preload: true });
     const playPressSound = useSoundEffect('/audio/press.mp3', { volume: 0.25, preload: true });
 
@@ -55,8 +55,8 @@ export default function UserCard({ userId, username, isOnline, bgColor, textColo
                 </div>
                 <div className="flex-1 grid gap-1">
                     <h3 className="text-white font-semibold capitalize">{username}</h3>
-                    <p className={clsx("text-sm w-[90%] truncate", lastMessage?.readByReceiver === false ? "text-white" : "text-gray-400")}>
-                        {lastMessage ? lastMessage.content : 'No messages yet.'}
+                    <p className={clsx("text-sm w-[90%] truncate", typingUsers.includes(userId) ? "text-orange-400 animate-pulse" : lastMessage?.readByReceiver === false ? "text-white" : "text-gray-400")}>
+                        {typingUsers.includes(userId) ? 'Typing...' : lastMessage ? lastMessage.content : 'No messages yet.'}
                     </p>
                 </div>
                 <div>

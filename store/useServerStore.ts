@@ -6,6 +6,7 @@ export const useServerStore = create<ServerState>((set) => ({
     server: null,
     user: null,
     error: null,
+    typingUsers: [],
     activeUsers: [],
     currentlyChatting: null,
     isOwner: false,
@@ -33,5 +34,9 @@ export const useServerStore = create<ServerState>((set) => ({
     }),
     setCurrentlyChatting: (user) => set({ currentlyChatting: user }),
     removeCurrentlyChatting: () => set({ currentlyChatting: null }),
-    onMessageRead: (messageId) => set(state => ({ messages: state.messages.map(message => message.messageId === messageId ? { ...message, readByReceiver: true } : message) }))
+    onMessageRead: (messageId) => set(state => ({ messages: state.messages.map(message => message.messageId === messageId ? { ...message, readByReceiver: true } : message) })),
+    addTypingUser: (userId) => set(state => ({
+        typingUsers: [...new Set([...state.typingUsers, userId])]
+    })),
+    removeTypingUser: (userId) => set(state => ({ typingUsers: state.typingUsers.filter(user => user !== userId) })),
 }));

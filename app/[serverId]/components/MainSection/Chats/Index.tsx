@@ -11,7 +11,7 @@ export default function ChatSection() {
     const chatContainerRef = useRef<HTMLDivElement>(null);
     const [showScrollButton, setShowScrollButton] = useState(false);
 
-    const { messages, server, currentlyChatting, user, activeUsers } = useServerStore();
+    const { messages, server, currentlyChatting, user, activeUsers, typingUsers } = useServerStore();
 
     // Function to scroll to bottom
     const scrollToBottom = () => {
@@ -105,7 +105,7 @@ export default function ChatSection() {
     return (
         <div className="flex-1 flex flex-col relative overflow-hidden">
             {relevantMessages.length === 0 && <p className="text-gray-300 text-sm text-center p-5">
-                <span className="px-4 py-1 bg-white/10 rounded-full border border-gray-500/40">Start a conversation</span>
+                {typingUsers.includes(currentlyChatting.userId) ? <span className="px-4 py-1 bg-white/10 rounded-full border border-gray-500/40 animate-pulse">Typing...</span> : <span className="px-4 py-1 bg-white/10 rounded-full border border-gray-500/40">Start a conversation</span>}
             </p>}
             {relevantMessages.length > 0 && <div 
                 ref={chatContainerRef} 
@@ -166,6 +166,17 @@ export default function ChatSection() {
                         </div>
                     );
                 })}
+                {typingUsers.includes(currentlyChatting.userId) && (
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 10 }}
+                        transition={{ duration: 0.2 }}
+                        className="flex items-center gap-2 p-3"
+                    >
+                        <p className="text-sm font-semibold uppercase text-orange-500/30"><p data-text="They're trash taking..." className="glitch animate-pulse">User is typing a message...</p></p>
+                    </motion.div>
+                )}
             </div>}
             
             <AnimatePresence>
