@@ -192,7 +192,7 @@ class ApiService {
         return new Error('An unexpected error occurred');
     }
 
-    public async refreshToken({ userId, serverId }: { userId: string, serverId: string }): Promise<ApiResponse<{ token: string }>> {
+    public async refreshToken({ userId, serverId }: { userId: string, serverId: string }): Promise<{ message: string, token: string }> {
         try {
             if (!this.baseUrl) throw new Error("Missing baseUrl Variable!");
 
@@ -204,9 +204,7 @@ class ApiService {
                 body: JSON.stringify({ userId, serverId })
             });
 
-            console.log("Refresh token response:", await response.json());
-
-            return this.handleResponse<ApiResponse<{ token: string }>>(response);
+            return this.handleResponse<{ message: string, token: string }>(response);
         } catch (error) {
             console.error('API Error:', error);
             throw this.handleError(error);

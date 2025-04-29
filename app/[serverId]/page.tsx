@@ -36,12 +36,10 @@ export default function Page() {
                 const errorMessage = error instanceof Error ? error.message : 'Failed to fetch server';
                 if (errorMessage.toLowerCase().includes('token has expired')) {
                     try {
-                        const { data: refreshTokenData } = await apiService.refreshToken({ 
+                        const refreshTokenData = await apiService.refreshToken({ 
                             userId: auth.userId, 
                             serverId: serverId as string 
                         });
-
-                        console.log(refreshTokenData);
                         
                         if (refreshTokenData?.token) {
                             setItem(serverId as string, {
@@ -55,8 +53,6 @@ export default function Page() {
                                 auth.userId, 
                                 refreshTokenData.token
                             );
-
-                            console.log(serverData);
                             
                             setServer(serverData);
                             return; // Exit the error handler after successful recovery
