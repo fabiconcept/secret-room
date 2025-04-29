@@ -15,8 +15,10 @@ export default function SoundTrack() {
         preload: true, 
         maxInterval: 2000,
     });
+    const playPressSound = useSoundEffect('/audio/press.mp3', { volume: 0.25, preload: true });
 
     const togglePlay = () => {
+        playPressSound.play();
         if (playSound.isPlaying) {
             playSound.stop();
             playGlitchSound.stop();

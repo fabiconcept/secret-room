@@ -15,6 +15,7 @@ export default function Header() {
     if (!currentlyChatting) return null;
 
     const handleCloseCurrentlyChatting = () => {
+        playSwingSound.play();
         if (!sideBarExpanded) toggleSideBar();
         removeCurrentlyChatting();
     }
@@ -30,7 +31,6 @@ export default function Header() {
         <div className="p-5 border-b border-gray-500/20 flex justify-between items-center bg-white/5 backdrop-blur-[1px]">
             <div className="flex items-center gap-4">
                 {isOwner && <div title="Close currently chatting" onClick={() => {
-                    playSwingSound.play();
                     handleCloseCurrentlyChatting()
                 }} className="h-10 w-10 cursor-pointer active:scale-90 group rounded-full bg-white/20 active:opacity-40 flex items-center justify-center">
                     <FaArrowLeftLong className="text-sm group-active:-rotate-12" />

@@ -13,7 +13,8 @@ import { FaTrash } from "react-icons/fa6";
 export default function MainSection() {
     const { server, currentlyChatting, isOwner } = useServerStore();
     const router = useRouter();
-    const playSwingSound = useSoundEffect('/audio/press.mp3', { volume: 0.5, preload: true });
+    const playPressSound = useSoundEffect('/audio/press.mp3', { volume: 0.5, preload: true });
+    const playSwingSound = useSoundEffect('/audio/swing.mp3', { volume: 0.5, preload: true });
 
     
     if (!server) return null;
@@ -31,6 +32,7 @@ export default function MainSection() {
     
                 const auth = getItem<typeof authFallback>(serverId, authFallback);
                 await apiService.deleteServer(serverId, auth.token);
+                playSwingSound.play();
 
                 router.push('/');
             } catch (error) {
@@ -43,7 +45,6 @@ export default function MainSection() {
     }
 
     const handleDeleteServer = () => {
-        playSwingSound.play();
         const promise = deleteServer();
         toast.promise(promise, {
             loading: 'Deleting server...',
@@ -54,7 +55,12 @@ export default function MainSection() {
     
     return (
         <div className="flex-1 h-full flex flex-col relative">
-            {!currentlyChatting && isOwner && <div onClick={handleDeleteServer} className="absolute top-0 
+            {!currentlyChatting && isOwner && <div onClick={()=>{
+                playPressSound.play();
+                setTimeout(() => {
+                    handleDeleteServer();
+                }, 200);
+            }} className="absolute top-0 
             right-0 p-3 max-sm:p-2">
                 <button className="px-5 py-2 max-sm:py-4 rounded-lg text-sm bg-red-500/10 border border-red-500/10 hover:bg-red-500 hover:text-white cursor-pointer active:scale-90 text-white">
                     <span className="max-sm:hidden">Delete this server</span>

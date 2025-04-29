@@ -8,6 +8,7 @@ import ChatSection from "./components";
 import { getItem, setItem } from "@/utils/localStorage";
 import { redirect, useParams } from "next/navigation";
 import { ServerResponse } from "@/app/types/server.types";
+import Head from "next/head";
 
 export default function Page() {
     const { serverId } = useParams();
@@ -112,13 +113,18 @@ export default function Page() {
     if (!server) return null;
 
     return (
-        <ServerProvider server={server}>
-            <div className="grid place-items-center min-h-dvh w-screen">
-                <div 
-                    className="h-dvh w-screen sm:rounded-3xl overflow-hidden border border-gray-500/20 sm:max-h-[calc(100vh-20px)] sm:max-w-[calc(100vw-20px)]">
-                    <ChatSection />
+        <>
+            <ServerProvider server={server}>
+            <Head>
+        <title>{server.server_name} Secret Room — Live Server</title>
+      </Head>
+                <div className="grid place-items-center min-h-dvh w-screen">
+                    <div
+                        className="h-dvh w-screen sm:rounded-3xl overflow-hidden border border-gray-500/20 sm:max-h-[calc(100vh-20px)] sm:max-w-[calc(100vw-20px)]">
+                        <ChatSection />
+                    </div>
                 </div>
-            </div>
-        </ServerProvider>
+            </ServerProvider>
+        </>
     );
 }
