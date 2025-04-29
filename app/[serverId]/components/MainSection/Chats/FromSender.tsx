@@ -256,7 +256,12 @@ const RenderFileType = ({ url }: { url: string }) => {
     }
 
     return (
-        <div className="gap-2 w-40 max-sm:max-w-full h-52 rounded-2xl border border-white/20 bg-white/5 grid place-items-center relative overflow-hidden">
+        <div 
+            className={clsx(
+                "gap-2 w-40 max-sm:max-w-full h-52 grid place-items-center relative",
+                url.endsWith(".gif") ? "" : "rounded-2xl border border-white/20 bg-white/5 overflow-hidden"
+            )}
+        >
             <div className={clsx(
                 "absolute top-0 left-0 w-full h-full bg-black/70 grid place-items-center",
                 status === 'downloading' ? "opacity-100" : "opacity-0 hover:opacity-100 "
