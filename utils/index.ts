@@ -334,24 +334,62 @@ export function isChatAcronym(text: string): boolean {
     // Convert to uppercase for case-insensitive matching
     const upperText = text.trim().toUpperCase();
 
-    // Common two-letter words
+    // Common two-letter words and expressions
     const commonShortWords = new Set([
+        // Original entries
         'NO', 'OK', 'HI', 'BYE', 'GO', 'SO', 'TO', 'UP', 'WE', 'ME', 'HE', 'SHE', 'IT', 'AM', 'IS', 'BE',
         'DO', 'BY', 'MY', 'IN', 'ON', 'AT', 'IF', 'OF', 'OR', 'AS', 'AN', 'US', 'YO', 'YA', 'UM', 'OH',
-        'AH', 'EH', 'MM', 'HM', 'UH', 'HA', 'YE', 'YA', 'UH', 'YO'
+        'AH', 'EH', 'MM', 'HM', 'UH', 'HA', 'YE', 'YA', 'UH', 'YO',
+
+        // Additional common English two-letter words
+        'AD', 'AX', 'AY', 'BA', 'BI', 'BO', 'ED', 'EF', 'EL', 'EM', 'EN', 'ER', 'ES', 'ET', 'EW', 'EX',
+        'FA', 'FE', 'GO', 'GU', 'HE', 'HI', 'HO', 'ID', 'IF', 'IN', 'IO', 'IS', 'IT', 'JO', 'KA', 'KI',
+        'LA', 'LI', 'LO', 'MA', 'ME', 'MI', 'MM', 'MO', 'MU', 'MY', 'NA', 'NE', 'NO', 'NU', 'OD', 'OE',
+        'OF', 'OH', 'OI', 'OK', 'OM', 'ON', 'OP', 'OR', 'OS', 'OW', 'OX', 'OY', 'PA', 'PE', 'PI', 'PO',
+        'QI', 'RE', 'SH', 'SI', 'SO', 'TA', 'TI', 'TO', 'UH', 'UM', 'UN', 'UP', 'UR', 'US', 'UT', 'WE',
+        'WO', 'XI', 'XU', 'YA', 'YE', 'YO', 'YU', 'ZA', 'ZO',
+
+        // Possessives and pronouns
+        'I\'M', 'I\'D', 'I\'L', 'HE\'S', 'SHE\'S', 'IT\'S', 'WE\'D', 'WE\'L', 'YOU\'D', 'THEY\'D',
+
+        // Common contractions
+        'AIN\'T', 'CAN\'T', 'DON\'T', 'ISN\'T', 'DIDN\'T', 'WON\'T', 'WASN\'T', 'AREN\'T', 'HASN\'T',
+
+        // Two-letter prepositions and conjunctions 
+        'AT', 'BY', 'IF', 'IN', 'OF', 'ON', 'OR', 'SO', 'TO', 'UP',
+
+        // Common pronouns
+        'HE', 'SHE', 'ME', 'WE', 'IT', 'US', 'I\'L',
+
+        // Common articles
+        'AN', 'A',
+
+        // Common expressions/interjections
+        'AW', 'EW', 'HA', 'HM', 'MM', 'OH', 'OW', 'OY', 'SH', 'UH', 'UM', 'YO',
+
+        // Two-letter foreign words common in English
+        'AU', 'DE', 'EN', 'ET', 'LE', 'LA', 'SI', 'UN', 'UNE', 'NE', 'PAS', 'EL',
+
+        // Common two-letter abbreviations and shortened words
+        'TV', 'PC', 'CD', 'DJ', 'MC', 'ID', 'IQ', 'IP', 'HD', 'HR', 'AM', 'FM', 'PM', 'AC', 'DC',
+        'VR', 'AR', 'AI', 'CV', 'PR', 'UK', 'US', 'EU', 'UN', 'IQ', 'EQ', 'PG', 'UX', 'UI', 'OS',
+        'RV', 'QB', 'VP',
+
+        // Internet/text shorthand
+        'TY', 'GG', 'WP', 'FF', 'GJ', 'NB', 'WB', 'GM', 'GN', 'HF', 'GL', 'DM', 'PM', 'TW', 'FB',
+        'IG', 'YT', 'OP', 'HP', 'XP', 'OG', 'RL', 'IK', 'JK', 'TW', 'BS', 'PR', 'PC', 'SU', 'RU'
     ]);
 
-    // Common chat acronyms/abbreviations 
-    // Includes classic ones and newer slang
+    // Common chat acronyms/abbreviations/slang
     const chatAcronyms = new Set([
-        // Classic chat acronyms
+        // Original classic chat acronyms
         'LOL', 'ROFL', 'LMAO', 'TTYL', 'BRB', 'AFK', 'IDK', 'IMO', 'IMHO', 'FYI', 'BTW', 'TBH',
         'OMG', 'WTF', 'GTG', 'IRL', 'NVM', 'JK', 'BFF', 'TMI', 'TL;DR', 'TLDR', 'DM', 'PM',
         'TY', 'THX', 'TYSM', 'TTYS', 'FAQ', 'NP', 'OMW', 'DIY', 'OFC', 'FTW', 'SMH', 'NGL',
         'RN', 'GG', 'WYD', 'HMU', 'FOMO', 'TBT', 'SFW', 'NSFW', 'AMA', 'ELI5', 'FB', 'IG',
         'WP', 'FF', 'GJ', 'ILY', 'NBD', 'OOTD', 'PPL', 'ASAP', 'AF', 'DND', 'BFN',
 
-        // Modern/newer slang
+        // Original modern/newer slang
         'IYKYK', 'LOML', 'GOAT', 'OTP', 'TFW', 'MFW', 'YSK', 'FTR', 'TIL', 'SRSLY',
         'WDYM', 'IDGAF', 'IMY', 'ICYMI', 'IKR', 'JW', 'KMS', 'KMN', 'LMK', 'OOMF',
         'RT', 'SMDH', 'SNS', 'ISTG', 'TMW', 'FBF', 'ILY', 'MCM', 'WCW', 'YOLO',
@@ -359,9 +397,77 @@ export function isChatAcronym(text: string): boolean {
         'LFG', 'IDFK', 'IDC', 'IK', 'TYT', 'WDYT', 'YT', 'HP', 'SUS', 'NB',
         'HBU', 'HBD', 'BS', 'BTS', 'FT', 'GN', 'GM', 'GMS', 'PS', 'SYBAU',
 
-        // Academic/professional acronyms that become chat acronyms
+        // Original academic/professional acronyms that become chat acronyms
         'FYA', 'EOD', 'ETA', 'ETA', 'OOO', 'COB', 'EOB', 'TBA', 'TBD', 'WFH',
-        'FYSA', 'FWIW', 'IIRC', 'YMMV', 'AFAIK', 'AFAICT', 'IIUC', 'IANAL'
+        'FYSA', 'FWIW', 'IIRC', 'YMMV', 'AFAIK', 'AFAICT', 'IIUC', 'IANAL',
+
+        // Additional classic chat acronyms
+        'ROTFL', 'ROTFLOL', 'LOLZ', 'LULZ', 'LMFAO', 'LYLAS', 'LYLAB', 'LYLC', 'LMIRL',
+        'BBS', 'BBL', 'B4N', 'CU', 'CYA', 'CYE', 'CYT', 'DIKU', 'F2F', 'G2G', 'G2B',
+        'G4C', 'H2CUS', 'HAGN', 'HAGO', 'IAC', 'IAE', 'ILU', 'ILY', 'IM', 'IOH', 'IOW',
+        'IRL', 'ISO', 'J4F', 'JAS', 'JIC', 'JSYK', 'KFY', 'KPC', 'L8R', 'LD', 'LDR',
+        'LMK', 'LOL', 'LTNC', 'MHOTY', 'NIMBY', 'NLT', 'NM', 'NRN', 'OIC', 'OMW',
+        'OOC', 'OT', 'OTOH', 'PHAT', 'PLZ', 'POS', 'POV', 'PTB', 'QT', 'RUT', 'RUOK',
+        'SOL', 'SRY', 'THX', 'TTFN', 'TTYL', 'TTYS', 'TYT', 'TYL', 'WB', 'WTG', 'WYWH',
+        'XOXO', 'Y2K', 'YBS', 'DKDC', 'FWIW', 'HTH', 'KISS', 'PFA', 'PMJI', 'POC', 'HAND',
+
+        // Additional modern internet/gaming slang
+        'ADS', 'AOE', 'AOM', 'APM', 'BM', 'CC', 'CD', 'CTRL', 'DPS', 'ELO', 'EXP', 'FF', 'FPS',
+        'GLHF', 'GG EZ', 'GLWT', 'GS', 'HP', 'IMBA', 'INT', 'KDR', 'KS', 'META', 'MMR', 'MOBA',
+        'MP', 'MVP', 'NERF', 'NPC', 'OP', 'POG', 'POGGERS', 'PVE', 'PVP', 'QQ', 'RNG', 'RP',
+        'RPG', 'RTS', 'STRAT', 'TDM', 'TP', 'ULT', 'VAC', 'WC', 'XP', 'BGM', 'OST', 'MMORPG',
+        'AFK', 'DLC', 'FTL', 'FTW', 'GFX', 'GFY', 'GG', 'GIT GUD', 'HUD', 'LAN', 'LAG', 'PUBG',
+        'BR', 'KEKW', 'COPIUM', 'HOPIUM', 'MALDING', 'SALTY', 'SWEATY', 'TRYHARD', 'GANKED',
+        'FARMED', 'CARRIED', 'BOOSTED', 'GRIEF', 'INTING', 'TOXIC', 'THROW', 'FEED',
+
+        // Additional social media & modern slang
+        'AAVE', 'ATP', 'ACAB', 'BAE', 'BBG', 'BBY', 'BMS', 'CEO', 'CHEUGY', 'DEF', 'DW',
+        'DEADASS', 'DYK', 'ESH', 'FINSTA', 'FML', 'FTFY', 'FWIW', 'HBD', 'ICYMI', 'IFYKYK',
+        'IKYFL', 'IMK', 'ITS GIVING', 'JFC', 'KWIM', 'LBVS', 'LFR', 'LIT', 'MOOD', 'NPC',
+        'NPCCORE', 'OFC', 'OML', 'ONG', 'OOMF', 'PERIODT', 'RQ', 'SHEESH', 'SKSKSK', 'SLAYED',
+        'SMOL', 'STAN', 'TIKTOK', 'WELP', 'WILDIN', 'YAS', 'YEET', 'BUSSIN', 'NO CAP', 'RIZZ',
+        'BOUJEE', 'BASED', 'AYO', 'CRINGE', 'RENT FREE', 'MAIN CHARACTER', 'UNDERSTOOD THE ASSIGNMENT',
+        'GATEKEEP', 'GASLIGHTING', 'HITS DIFFERENT', 'TOUCH GRASS', 'UNHINGED', 'VIBE CHECK',
+        'LIVING RENT FREE', 'BIG YIKES', 'RATIO', 'LIVING MY BEST LIFE', 'IG', 'TFG',
+
+        // Additional work/professional acronyms and slang
+        'ASAIC', 'ASAP', 'BAU', 'BCC', 'BID', 'BOM', 'C-SUITE', 'CAB', 'CAPEX', 'CCing',
+        'CFO', 'CIO', 'CMO', 'COB', 'COP', 'CRM', 'CTA', 'CTO', 'CX', 'CYA', 'EOB', 'EOD',
+        'EOW', 'EOM', 'EOQ', 'ERP', 'FIFO', 'FSO', 'FTE', 'FYA', 'FYE', 'FYI', 'GDPR', 'HIPAA',
+        'HQ', 'HR', 'IP', 'IPO', 'IR', 'IT', 'ITIL', 'KPI', 'LIFO', 'LTV', 'M&A', 'MoM', 'MVP',
+        'NAFTA', 'NDA', 'NPV', 'OKR', 'OOO', 'OPEX', 'OT', 'OTP', 'P&L', 'PCP', 'PDF', 'PM',
+        'PMO', 'PO', 'POC', 'PPTX', 'PR', 'PTO', 'QBR', 'QoQ', 'R&D', 'RFI', 'RFP', 'ROI',
+        'SDE', 'SEO', 'SLA', 'SME', 'SWOT', 'TED', 'TLDR', 'TOC', 'TOS', 'UAT', 'UI', 'USP',
+        'UX', 'VC', 'VPN', 'WBS', 'WFH', 'WIIFM', 'WYSIWYG', 'YOY', 'YTD', 'SMART', 'RAID',
+
+        // Extended internet slang/memes
+        'AFAICT', 'AKA', 'ATM', 'B2B', 'B2C', 'CMIW', 'CPOC', 'CYTD', 'DBA', 'DEV', 'DOA',
+        'DOB', 'DOE', 'ECPI', 'ELI5', 'EOC', 'FAANG', 'FAFO', 'GAFAM', 'GB', 'GCS', 'GTK',
+        'HIJKLMNO', 'IANAD', 'IANAL', 'IB', 'IDK', 'IME', 'IMHO', 'IIRC', 'IMF', 'IRL', 'ISO',
+        'J/K', 'JIT', 'JSYK', 'LTNS', 'LTR', 'MIRL', 'MOTD', 'NEET', 'NFT', 'NOYB', 'NTK',
+        'OTFLMAO', 'PAW', 'PC', 'PDT', 'PEBKAC', 'PITA', 'PST', 'QED', 'QOTD', 'REM', 'RFLOL',
+        'RSI', 'RSN', 'RTFM', 'SCNR', 'SCUBA', 'SEP', 'SJW', 'SMH', 'TAFN', 'TANSTAAFL', 'TBC',
+        'TBD', 'TBH', 'TIFU', 'TFT', 'TIA', 'TIL', 'TINA', 'TINWIS', 'TL;DR', 'TMI', 'TPTB',
+        'TTBOMK', 'TWIAVBP', 'TWSS', 'TYVM', 'VOD', 'WFM', 'WOMBAT', 'YAGNI', 'YKINMK', 'YMMV',
+        'ZZZ', 'TQ',
+
+        // More recent social media terms
+        'CEO OF', 'CORE', 'DEMURE', 'ERA', 'FANUM TAX', 'GYAT', 'HUH', 'FATHER RIZZ', 'MOTHER',
+        'REAL', 'SLEEPY', 'SIGMA', 'SKIBIDI', 'WORDINGTON', 'WOCK', 'OHIO', 'AHEGAO', 'WAIFU',
+        'HUSBANDO', 'ORA', 'MUDA', 'JOJO', 'WEEB', 'OTAKU', 'KAWAII', 'SENPAI', 'KOHAI', 'ISEKAI',
+        'ML', 'AI', 'GPT', 'ASL', 'DNF', 'DNI', 'GRWM', 'ASMR', 'STFU', 'STG', 'BET', 'NR',
+        'IB', 'S/O', 'MLA', 'APA', 'PTFO', 'TTM', 'IAM', 'OKRT', 'NOYB',
+
+        // More exclamatory expressions
+        'FFS', 'JFC', 'FML', 'FMY', 'FMH', 'IJBOL', 'TWSS', 'KYS', 'KMS', 'KMN', 'PTFO',
+        'STFO', 'STFU', 'GTFO', 'CTFO', 'BTFO', 'DYAC', 'FYVM', 'GBTW', 'HSIK', 'ISAGN',
+        'IWSN', 'HFSB', 'KMSL', 'NIFOC', 'POS', 'SNAFU', 'SWYP', 'TWAK', 'TISL',
+
+        // Technology related
+        'API', 'SDK', 'URL', 'GUI', 'IoT', 'ML', 'AI', 'GPT', 'AR', 'VR', 'IDE', 'CPU', 'GPU',
+        'RAM', 'ROM', 'SSD', 'HDD', 'NIC', 'DNS', 'ISP', 'LAN', 'WAN', 'MAN', 'HTTP', 'FTP',
+        'SSH', 'VPN', 'SQL', 'XML', 'JSON', 'HTML', 'CSS', 'PHP', 'SPA', 'PWA', 'CDN', 'CI/CD',
+        'AWS', 'GCP', 'VM', 'DB', 'SAAS', 'PAAS', 'IAAS', 'UI/UX'
     ]);
 
     // Check if it's a common short word
@@ -382,30 +488,30 @@ export const downloadHandler = async (contentUrl: string, customFilename?: strin
     try {
         // Fetch the content
         const response = await fetch(contentUrl);
-        
+
         if (!response.ok) {
             console.error(`Failed to download: ${response.status} ${response.statusText}`);
             return;
         }
-        
+
         // Get the blob data
         const blob = await response.blob();
-        
+
         // Create object URL for the blob
         const objectUrl = URL.createObjectURL(blob);
-        
+
         // Determine filename and extension
         let filename = customFilename;
-        
+
         if (!filename) {
             // Extract filename from URL or use a sanitized version of the URL
             const urlFilename = contentUrl.split('/').pop();
             filename = urlFilename || `file_${Date.now()}`;
-            
+
             // Remove query parameters if present
             filename = filename.split('?')[0];
         }
-        
+
         // Get file extension from Content-Type if available
         const contentType = response.headers.get('Content-Type');
         if (contentType && !filename.includes('.')) {
@@ -414,22 +520,22 @@ export const downloadHandler = async (contentUrl: string, customFilename?: strin
                 filename = `${filename}.${ext}`;
             }
         }
-        
+
         // Create and trigger download link
         const link = document.createElement('a');
         link.href = objectUrl;
         link.setAttribute('download', filename);
-        
+
         // Add to document, click, and remove
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-        
+
         // Clean up the object URL after download starts
         setTimeout(() => {
             URL.revokeObjectURL(objectUrl);
         }, 100);
-        
+
     } catch (error) {
         console.error('Download failed:', error);
         throw error;
