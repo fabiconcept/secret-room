@@ -12,7 +12,7 @@ export enum STORAGE_KEYS {
 
 export interface GeneratorOptions {
     includeLocation?: boolean;
-    includeSuffix?: boolean;
+    category: number;
     maxLength: number;
     separator?: string;
 }
@@ -20,7 +20,6 @@ export type WordCategory = {
     adjectives: string[];
     nouns: string[];
     locations: string[];
-    suffixes: string[];
 };
 
 export interface Message {

@@ -11,6 +11,7 @@ import { CreateServerRequest } from '@/app/types/server.types';
 import toast from 'react-hot-toast';
 import { setItem } from '@/utils/localStorage';
 import { useRouter } from 'next/navigation';
+import { wordsCategories } from '@/constants/words';
 
 interface FormState {
     isLoading: boolean;
@@ -29,7 +30,7 @@ export default function Form() {
     const [encryptionKey, setEncryptionKey] = useState('');
     const [lifespan, setLifespan] = useState(60); // Default 1 hour
     const [state, setState] = useState<FormState>(initialState);
-
+    const randomIndex = Math.floor(Math.random() * wordsCategories.length);
 
     const handleGenerateNewServerName = useCallback(() => {
         if (state.isLoading) return;
@@ -37,7 +38,7 @@ export default function Form() {
         const newServerName = generateServerName({
             maxLength: 32,
             includeLocation: true,
-            includeSuffix: false,
+            category: randomIndex,
             separator: '-'
         });
         setPlaceholderName(newServerName);
@@ -68,7 +69,7 @@ export default function Form() {
         setPlaceholderName(generateServerName({
             maxLength: 32,
             includeLocation: true,
-            includeSuffix: false,
+            category: randomIndex,
             separator: '-'
         }));
     }, [serverName]);

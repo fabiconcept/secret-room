@@ -1,4 +1,5 @@
-import { creepyWords, defaultOptions } from "@/constants/index.constant";
+import { defaultOptions } from "@/constants/index.constant";
+import { wordsCategories } from "@/constants/words";
 import { GeneratorOptions } from "@/types";
 import toast from "react-hot-toast";
 
@@ -9,7 +10,7 @@ import toast from "react-hot-toast";
  */
 export function generateServerName(options: GeneratorOptions): string {
     const config = { ...defaultOptions, ...options };
-    const { includeLocation, includeSuffix, maxLength, separator } = config;
+    const { includeLocation, category, maxLength, separator } = config;
 
     // Get random words from each category
     const getRandomWord = (array: string[]) => array[Math.floor(Math.random() * array.length)];
@@ -18,23 +19,20 @@ export function generateServerName(options: GeneratorOptions): string {
     const nameComponents: string[] = [];
     const roll = Math.random();
 
+    const wordMixer = wordsCategories[category];
+
     if (roll < 0.3) {
         // Structure: Adjective + Noun (30% chance)
-        nameComponents.push(getRandomWord(creepyWords.adjectives));
-        nameComponents.push(getRandomWord(creepyWords.nouns));
+        nameComponents.push(getRandomWord(wordMixer.adjectives));
+        nameComponents.push(getRandomWord(wordMixer.nouns));
     } else if (roll < 0.6) {
         // Structure: Noun + Location (30% chance)
-        nameComponents.push(getRandomWord(creepyWords.nouns));
-        includeLocation && nameComponents.push(getRandomWord(creepyWords.locations));
+        nameComponents.push(getRandomWord(wordMixer.nouns));
+        includeLocation && nameComponents.push(getRandomWord(wordMixer.locations));
     } else {
         // Structure: Adjective + Location (40% chance)
-        nameComponents.push(getRandomWord(creepyWords.adjectives));
-        includeLocation && nameComponents.push(getRandomWord(creepyWords.locations));
-    }
-
-    // Add suffix with probability if enabled
-    if (includeSuffix && Math.random() < 0.4) {
-        nameComponents.push(getRandomWord(creepyWords.suffixes));
+        nameComponents.push(getRandomWord(wordMixer.adjectives));
+        includeLocation && nameComponents.push(getRandomWord(wordMixer.locations));
     }
 
     // Join components and ensure length constraint
