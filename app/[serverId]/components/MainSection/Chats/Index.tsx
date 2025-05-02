@@ -29,7 +29,7 @@ export default function ChatSection() {
             const { scrollTop, scrollHeight, clientHeight } = chatContainerRef.current;
             // Show button if scrolled up more than 50px from bottom
             const distanceFromBottom = scrollHeight - scrollTop - clientHeight;
-            setShowScrollButton(distanceFromBottom > 50);
+            setShowScrollButton(distanceFromBottom > 100);
         }
     };
 

@@ -80,7 +80,7 @@ export default function SideBar() {
             <section
                 className={clsx(
                     "flex overflow-hidden flex-col h-full bg-black/20 border-r border-b border-white/10",
-                    sideBarExpanded ? "w-[clamp(20rem,100%,30rem)] max-sm:w-full" : "w-0"
+                    sideBarExpanded ? "w-[clamp(20rem,100%,25rem)] max-sm:w-full" : "w-0"
                 )}
             >
                 <div className="flex-1 w-full overflow-y-auto bg-white/5">
