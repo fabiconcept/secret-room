@@ -44,34 +44,6 @@ export default function Settings() {
         setSettings(prev => ({ ...prev, glitchEffect: !prev.glitchEffect }));
     };
 
-    const setButtonSound = (sound: SoundControl) => {
-        setSettings(prev => ({ ...prev, buttonSound: sound }));
-    };
-
-    const setCrankSound = (sound: SoundControl) => {
-        setSettings(prev => ({ ...prev, crankSound: sound }));
-    };
-
-    const setTypingSound = (sound: SoundControl) => {
-        setSettings(prev => ({ ...prev, typingSound: sound }));
-    };
-
-    const setMessageSound = (sound: SoundControl) => {
-        setSettings(prev => ({ ...prev, messageSound: sound }));
-    };
-
-    const setSoundEffect = (sound: SoundControl) => {
-        setSettings(prev => ({ ...prev, soundEffect: sound }));
-    };
-
-    const setOtherUISound = (sound: SoundControl) => {
-        setSettings(prev => ({ ...prev, otherUISound: sound }));
-    };
-
-    const setGlitchSound = (sound: SoundControl) => {
-        setSettings(prev => ({ ...prev, glitchSound: sound }));
-    };
-
     const setBackgroundMatrix = (matrix: { color: string; opacity: number }) => {
         setSettings(prev => ({ ...prev, backgroundMatrix: matrix }));
     };

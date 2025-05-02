@@ -68,7 +68,7 @@ export default function SettingsForm(): React.JSX.Element {
             {activeTab === 'sound' && (
                 <div className="space-y-4 px-2 mt-3">
                     {Object.entries(settings)
-                        .filter(([key, val]) => typeof val === 'object' && 'volume' in val)
+                        .filter(([_, val]) => typeof val === 'object' && 'volume' in val)
                         .map(([key, control]) => {
                             const soundControl = control as SoundControl;
                             return (
@@ -76,7 +76,7 @@ export default function SettingsForm(): React.JSX.Element {
                                     <span className="capitalize text-gray-200 text-sm">{key}</span>
                                     <div className="flex items-center gap-2">
                                         <button
-                                            onClick={() => settings.toggleMute(key as any)}
+                                            onClick={() => settings.toggleMute(key as "buttonSound" | "crankSound" | "typingSound" | "messageSound" | "soundEffect" | "otherUISound" | "glitchSound")}
                                             className="text-gray-400 hover:text-white cursor-pointer"
                                         >
                                             {soundControl.isMuted ? <FaVolumeXmark className="text-red-500" /> : <FaVolumeHigh />}
@@ -88,7 +88,7 @@ export default function SettingsForm(): React.JSX.Element {
                                             disabled={soundControl.isMuted}
                                             step={0.01}
                                             value={soundControl.isMuted ? 0 : soundControl.volume}
-                                            onChange={e => settings.updateVolume(key as any, parseFloat(e.target.value))}
+                                            onChange={e => settings.updateVolume(key as "buttonSound" | "crankSound" | "typingSound" | "messageSound" | "soundEffect" | "otherUISound" | "glitchSound", parseFloat(e.target.value))}
                                             className="w-28 accent-white/40 disabled:cursor-not-allowed cursor-pointer"
                                         />
                                     </div>
