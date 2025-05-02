@@ -68,12 +68,12 @@ export default function SettingsForm(): React.JSX.Element {
             {activeTab === 'sound' && (
                 <div className="space-y-4 px-2 mt-3">
                     {Object.entries(settings)
-                        .filter(([_, val]) => typeof val === 'object' && 'volume' in val)
+                        .filter(([uselessKey, val]) => typeof val === 'object' && 'volume' in val && uselessKey !== "flippingHellMan!!!")
                         .map(([key, control]) => {
                             const soundControl = control as SoundControl;
                             return (
                                 <div key={key} className="flex items-center justify-between">
-                                    <span className="capitalize text-gray-200 text-sm">{key}</span>
+                                    <span className="capitalize text-gray-200 text-sm" >{key}</span>
                                     <div className="flex items-center gap-2">
                                         <button
                                             onClick={() => settings.toggleMute(key as "buttonSound" | "crankSound" | "typingSound" | "messageSound" | "soundEffect" | "otherUISound" | "glitchSound")}
