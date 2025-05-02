@@ -1,6 +1,8 @@
 "use client";
 
 import { useCallback, useRef, useEffect, useState } from 'react';
+import useSettingStore from '@/store/useSettingStore';
+import { SoundControlKey } from '@/types/useSettingStore.interface';
 
 /**
  * A hook for playing sound effects in a React application.
@@ -26,27 +28,38 @@ const useSoundEffect = (
         minInterval?: number;
         maxInterval?: number;
         autoplay?: boolean;
+        settingsKey?: SoundControlKey;
     } = {}
 ) => {
     const { 
-        volume = 1, 
+        volume: initialVolume = 1, 
         preload = true,
         loop = false,
         playRandomly = false,
         minInterval = 5000,
         maxInterval = 15000,
-        autoplay = false
+        autoplay = false,
+        settingsKey
     } = options;
+    
+    // Get settings from the store
+    const settings = useSettingStore();
+    const storeVolume = settingsKey ? settings[settingsKey]?.volume ?? initialVolume : initialVolume;
+    const isMuted = settingsKey ? settings[settingsKey]?.isMuted ?? false : false;
+    const volume = isMuted ? 0 : storeVolume;
     
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const intervalRef = useRef<NodeJS.Timeout | null>(null);
     const isActiveRef = useRef<boolean>(true);
     const [isPlaying, setIsPlaying] = useState<boolean>(false);
+    const [currentVolume, setCurrentVolume] = useState<number>(storeVolume);
 
-    // Preload the audio if specified
+    // Preload the audio if specified and update volume when settings change
     useEffect(() => {
-        if (preload) {
+        if (preload && !audioRef.current) {
             audioRef.current = new Audio(soundUrl);
+        }
+        if (audioRef.current) {
             audioRef.current.volume = Math.min(1, Math.max(0, volume));
             audioRef.current.preload = 'auto';
         }
@@ -114,7 +127,7 @@ const useSoundEffect = (
 
         // Create a new audio element
         const audio = new Audio(soundUrl);
-        audio.volume = Math.min(1, Math.max(0, volume));
+        audio.volume = Math.min(1, Math.max(0, currentVolume));
         audio.loop = loop;
 
         // Set the audio ref to the new element
@@ -138,7 +151,7 @@ const useSoundEffect = (
                 }
             });
         }
-    }, [soundUrl, volume, loop]);
+    }, [soundUrl, currentVolume, loop]);
 
     const stopSoundEffect = useCallback(() => {
         if (audioRef.current) {
@@ -149,11 +162,33 @@ const useSoundEffect = (
         }
     }, []);
 
+    /**
+     * Adjusts the volume of the currently playing sound and updates the volume setting for future playback
+     * @param {number} newVolume - New volume level between 0 and 1
+     * @returns {number} - The actual volume that was set after clamping
+     */
+    const adjustVolume = useCallback((newVolume: number): number => {
+        // Clamp volume between 0 and 1
+        const clampedVolume = Math.min(1, Math.max(0, newVolume));
+        
+        // Update the current volume state
+        setCurrentVolume(clampedVolume);
+        
+        // If audio is currently playing, update its volume immediately
+        if (audioRef.current) {
+            audioRef.current.volume = clampedVolume;
+        }
+        
+        return clampedVolume;
+    }, []);
+
     return {
         play: playSoundEffect,
         stop: stopSoundEffect,
         startRandom: startRandomPlayback,
-        isPlaying
+        adjustVolume,
+        isPlaying,
+        currentVolume
     };
 };
 
