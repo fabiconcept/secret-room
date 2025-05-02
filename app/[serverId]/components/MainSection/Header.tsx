@@ -5,11 +5,18 @@ import { useAppStore } from "@/store/useAppStore";
 import { socketService } from "@/utils/services/socket.service";
 import { formatLastSeen } from "@/utils";
 import useSoundEffect from "@/utils/Hooks/useSoundEffect";
+import useSettingStore from "@/store/useSettingStore";
+import { useEffect } from "react";
 
 export default function Header() {
     const { currentlyChatting, server, isOwner, removeCurrentlyChatting, typingUsers } = useServerStore();
     const { sideBarExpanded, toggleSideBar } = useAppStore();
-    const playSwingSound = useSoundEffect('/audio/press.mp3', { volume: 0.5, preload: true });
+    const { buttonSound } = useSettingStore();
+    const playSwingSound = useSoundEffect('/audio/press.mp3', { volume: buttonSound.isMuted ? 0 : buttonSound.volume, preload: true });
+
+    useEffect(() => {
+        playSwingSound.adjustVolume(buttonSound.volume);
+    }, [buttonSound]);
 
     if (!server) return null;
     if (!currentlyChatting) return null;

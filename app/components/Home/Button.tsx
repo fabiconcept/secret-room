@@ -2,10 +2,16 @@
 
 import "@/app/styles/button.css"
 import useSoundEffect from "@/utils/Hooks/useSoundEffect";
-import React from 'react'
+import React, { useEffect } from 'react'
+import useSettingStore from '@/store/useSettingStore';
 
 export default function Button({ text, onClick }: { text: string, onClick: () => void }) {
-    const playSwingSound = useSoundEffect('/audio/press.mp3', { volume: 0.5, preload: true });
+    const { buttonSound } = useSettingStore();
+    const playSwingSound = useSoundEffect('/audio/press.mp3', { volume: buttonSound.isMuted ? 0 : buttonSound.volume, preload: true });
+
+    useEffect(() => {
+        playSwingSound.adjustVolume(buttonSound.volume);
+    }, [buttonSound]);
 
     return (
         <button onClick={()=>{

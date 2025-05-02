@@ -1,6 +1,7 @@
 "use client";
 
 import { useServerStore } from "@/store/useServerStore";
+import useSettingStore from "@/store/useSettingStore";
 import { Message } from "@/types";
 import useSoundEffect from "@/utils/Hooks/useSoundEffect";
 import SirvClient from "@/utils/services/sirv.service";
@@ -17,10 +18,36 @@ export default function ChatBox() {
     const [message, setMessage] = useState('');
     const [attachFile, setAttachFile] = useState<File | null>(null);
 
-    const playClickSound = useSoundEffect('/audio/click.mp3', { volume: 0.25, preload: true });
-    const playSwingSound = useSoundEffect('/audio/press.mp3', { volume: 0.5, preload: true });
-    const playPopUpSound = useSoundEffect('/audio/pop-up.mp3', { volume: 0.5, preload: true });
-    const playCloseSound = useSoundEffect('/audio/close.mp3', { volume: 0.5, preload: true });
+    const settings = useSettingStore();
+    const playClickSound = useSoundEffect('/audio/click.mp3', { volume: settings.buttonSound.isMuted ? 0 : settings.buttonSound.volume, preload: true });
+    const playSwingSound = useSoundEffect('/audio/press.mp3', { volume: settings.crankSound.isMuted ? 0 : settings.crankSound.volume, preload: true });
+    const playPopUpSound = useSoundEffect('/audio/pop-up.mp3', { volume: settings.typingSound.isMuted ? 0 : settings.typingSound.volume, preload: true });
+    const playCloseSound = useSoundEffect('/audio/close.mp3', { volume: settings.otherUISound.isMuted ? 0 : settings.otherUISound.volume, preload: true });
+
+    useEffect(() => {
+        playClickSound.adjustVolume(settings.buttonSound.volume);
+    }, [settings.buttonSound]);
+
+    useEffect(() => {
+        playSwingSound.adjustVolume(settings.crankSound.volume);
+        if (settings.crankSound.isMuted) {
+            playSwingSound.stop();
+        }
+    }, [settings.crankSound]);
+
+    useEffect(() => {
+        playPopUpSound.adjustVolume(settings.typingSound.volume);
+        if (settings.typingSound.isMuted) {
+            playPopUpSound.stop();
+        }
+    }, [settings.typingSound]);
+
+    useEffect(() => {
+        playCloseSound.adjustVolume(settings.otherUISound.volume);
+        if (settings.otherUISound.isMuted) {
+            playCloseSound.stop();
+        }
+    }, [settings.otherUISound]);
 
     const fileInputRef = useRef<HTMLInputElement>(null);
     const textInputRef = useRef<HTMLTextAreaElement>(null);

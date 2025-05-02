@@ -1,6 +1,8 @@
 "use client";
 
+import { useEffect } from 'react';
 import { useServerStore } from '@/store/useServerStore';
+import useSettingStore from '@/store/useSettingStore';
 import useSoundEffect from '@/utils/Hooks/useSoundEffect';
 import clsx from 'clsx';
 import { FaPaperclip } from 'react-icons/fa6';
@@ -16,8 +18,23 @@ interface UserCardProps {
 
 export default function UserCard({ userId, username, isOnline, bgColor, textColor }: UserCardProps) {
     const { server, messages, setCurrentlyChatting, activeUsers, typingUsers } = useServerStore();
-    const playOpenSound = useSoundEffect('/audio/open.mp3', { volume: 0.5, preload: true });
-    const playPressSound = useSoundEffect('/audio/press.mp3', { volume: 0.25, preload: true });
+    const settings = useSettingStore();  
+    const playOpenSound = useSoundEffect('/audio/open.mp3', { 
+        volume: settings.otherUISound.isMuted ? 0 : settings.otherUISound.volume, 
+        preload: true 
+    });
+    const playPressSound = useSoundEffect('/audio/press.mp3', { 
+        volume: settings.buttonSound.isMuted ? 0 : settings.buttonSound.volume, 
+        preload: true 
+    });
+
+    useEffect(() => {
+        playOpenSound.adjustVolume(settings.otherUISound.volume);
+    }, [settings.otherUISound]);
+
+    useEffect(() => {
+        playPressSound.adjustVolume(settings.buttonSound.volume);
+    }, [settings.buttonSound]);
 
     if (!server) return null;
 

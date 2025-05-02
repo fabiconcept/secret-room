@@ -11,6 +11,7 @@ import { ServerResponse } from '@/app/types/server.types';
 import { Auth } from '@/app/types/index.type';
 import { useAppStore } from '@/store/useAppStore';
 import useSoundEffect from '@/utils/Hooks/useSoundEffect';
+import useSettingStore from '@/store/useSettingStore';
 
 interface ServerProviderProps {
     children: React.ReactNode;
@@ -32,15 +33,47 @@ const ErrorDisplay = ({ error }: { error: string }) => (
 );
 
 export default function ServerProvider({ children, server }: ServerProviderProps) {
-    const { setServer, setUser, setError, setLoading, clearServer, setActiveUsers, isOwner, error, isLoading, setIsOwner, setCurrentlyChatting, addMessage, onMessageRead, populateMessages, addTypingUser, removeTypingUser } = useServerStore();
+    const { 
+        setServer, setUser, setError, setLoading, clearServer, setActiveUsers, 
+        isOwner, error, isLoading, setIsOwner, setCurrentlyChatting, 
+        addMessage, onMessageRead, populateMessages, addTypingUser, removeTypingUser 
+    } = useServerStore();
     const { server_id } = server;
     const { setHomeBackgroundFontSize } = useAppStore();
 
-    const playPopSound = useSoundEffect('/audio/pop.mp3', { volume: 1, preload: true });
-    const playCreakingSound = useSoundEffect('/audio/creaking-door.mp3', { volume: 0.5, preload: true });
-    const playWoshSound = useSoundEffect('/audio/wosh.mp3', { volume: 0.5, preload: true });
-    const playSeenSound = useSoundEffect('/audio/seen.mp3', { volume: 0.5, preload: true });
+    const settings = useSettingStore();
+    const playPopSound = useSoundEffect('/audio/pop.mp3', { 
+        volume: settings.buttonSound.isMuted ? 0 : settings.buttonSound.volume, 
+        preload: true 
+    });
+    const playCreakingSound = useSoundEffect('/audio/creaking-door.mp3', { 
+        volume: settings.crankSound.isMuted ? 0 : settings.crankSound.volume, 
+        preload: true 
+    });
+    const playWoshSound = useSoundEffect('/audio/wosh.mp3', { 
+        volume: settings.otherUISound.isMuted ? 0 : settings.otherUISound.volume, 
+        preload: true 
+    });
+    const playSeenSound = useSoundEffect('/audio/seen.mp3', { 
+        volume: settings.otherUISound.isMuted ? 0 : settings.otherUISound.volume, 
+        preload: true 
+    });
 
+    useEffect(() => {
+        playPopSound.adjustVolume(settings.buttonSound.volume);
+    }, [settings.buttonSound]);
+
+    useEffect(() => {
+        playCreakingSound.adjustVolume(settings.crankSound.volume);
+    }, [settings.crankSound]);
+
+    useEffect(() => {
+        playWoshSound.adjustVolume(settings.otherUISound.volume);
+    }, [settings.otherUISound]);
+
+    useEffect(() => {
+        playSeenSound.adjustVolume(settings.otherUISound.volume);
+    }, [settings.otherUISound]);
 
     useEffect(() => {
         const initializeServerState = async () => {

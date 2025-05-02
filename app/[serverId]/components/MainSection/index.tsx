@@ -9,12 +9,25 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import useSoundEffect from "@/utils/Hooks/useSoundEffect";
 import { FaTrash } from "react-icons/fa6";
+import useSettingStore from "@/store/useSettingStore";
+import { useEffect } from "react";
 
 export default function MainSection() {
     const { server, currentlyChatting, isOwner } = useServerStore();
     const router = useRouter();
-    const playPressSound = useSoundEffect('/audio/press.mp3', { volume: 0.5, preload: true });
-    const playSwingSound = useSoundEffect('/audio/swing.mp3', { volume: 0.5, preload: true });
+    const { buttonSound, otherUISound } = useSettingStore();
+
+
+    const playPressSound = useSoundEffect('/audio/press.mp3', { volume: buttonSound.isMuted ? 0 : buttonSound.volume, preload: true });
+    const playSwingSound = useSoundEffect('/audio/swing.mp3', { volume: otherUISound.isMuted ? 0 : otherUISound.volume, preload: true });
+
+    useEffect(() => {
+        playPressSound.adjustVolume(buttonSound.volume);
+    }, [buttonSound]);
+
+    useEffect(() => {
+        playSwingSound.adjustVolume(otherUISound.volume);
+    }, [otherUISound]);
 
     
     if (!server) return null;

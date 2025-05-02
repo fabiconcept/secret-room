@@ -1,5 +1,6 @@
 'use client';
 
+import useSettingStore from '@/store/useSettingStore';
 import useSoundEffect from '@/utils/Hooks/useSoundEffect';
 import React, { useState, useEffect, useCallback } from 'react';
 import { FaSkull } from 'react-icons/fa6';
@@ -23,7 +24,12 @@ export const LifespanSlider: React.FC<LifespanSliderProps> = ({
     onChange
 }) => {
     const [isDragging, setIsDragging] = useState(false);
-    const playWindUpSound = useSoundEffect('/audio/windup.mp3', { volume: 0.5, preload: true });
+    const { otherUISound } = useSettingStore();
+    const playWindUpSound = useSoundEffect('/audio/windup.mp3', { volume: otherUISound.isMuted ? 0 : otherUISound.volume, preload: true });
+
+    useEffect(() => {
+        playWindUpSound.adjustVolume(otherUISound.volume);
+    }, [otherUISound]);
 
 
     // Find the closest checkpoint to the current value

@@ -1,7 +1,8 @@
 'use client';
 
+import useSettingStore from '@/store/useSettingStore';
 import useSoundEffect from '@/utils/Hooks/useSoundEffect';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { FaShuffle } from 'react-icons/fa6';
 
 interface InputWithShuffleProps {
@@ -29,8 +30,17 @@ export const InputWithShuffle: React.FC<InputWithShuffleProps> = ({
     disabled,
     hint
 }) => {
-    const playSwingSound = useSoundEffect('/audio/press.mp3', { volume: 0.5, preload: true });
-    const playClickSound = useSoundEffect('/audio/click.mp3', { volume: 0.25, preload: true });
+    const { buttonSound, typingSound } = useSettingStore();
+    const playSwingSound = useSoundEffect('/audio/press.mp3', { volume: buttonSound.isMuted ? 0 : buttonSound.volume, preload: true });
+    const playClickSound = useSoundEffect('/audio/click.mp3', { volume: typingSound.isMuted ? 0 : typingSound.volume, preload: true });
+
+    useEffect(() => {
+        playSwingSound.adjustVolume(buttonSound.volume);
+    }, [buttonSound]);
+
+    useEffect(() => {
+        playClickSound.adjustVolume(typingSound.volume);
+    }, [typingSound]);
 
 
     return (

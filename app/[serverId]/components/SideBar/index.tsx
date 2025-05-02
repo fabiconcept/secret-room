@@ -12,13 +12,18 @@ import clsx from "clsx";
 import { useEffect } from "react";
 import { FaCopy } from "react-icons/fa6";
 import useSoundEffect from "@/utils/Hooks/useSoundEffect";
+import useSettingStore from "@/store/useSettingStore";
 
 
 export default function SideBar() {
     const { server, activeUsers, isOwner, currentlyChatting, messages } = useServerStore();
     const { sideBarExpanded, setSideBarExpanded } = useAppStore();
-    const playSwingSound = useSoundEffect('/audio/press.mp3', { volume: 0.5, preload: true });
+    const { buttonSound } = useSettingStore();
+    const playSwingSound = useSoundEffect('/audio/press.mp3', { volume: buttonSound.isMuted ? 0 : buttonSound.volume, preload: true });
 
+    useEffect(() => {
+        playSwingSound.adjustVolume(buttonSound.volume);
+    }, [buttonSound]);
     
     useEffect(() => {
         if (!currentlyChatting) {
