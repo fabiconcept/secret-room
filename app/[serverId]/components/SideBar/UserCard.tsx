@@ -29,11 +29,11 @@ export default function UserCard({ userId, username, isOnline, bgColor, textColo
     });
 
     useEffect(() => {
-        playOpenSound.adjustVolume(settings.otherUISound.volume);
+        playOpenSound.adjustVolume(settings.otherUISound.isMuted ? 0 : settings.otherUISound.volume);
     }, [settings.otherUISound]);
 
     useEffect(() => {
-        playPressSound.adjustVolume(settings.buttonSound.volume);
+        playPressSound.adjustVolume(settings.buttonSound.isMuted ? 0 : settings.buttonSound.volume);
     }, [settings.buttonSound]);
 
     if (!server) return null;

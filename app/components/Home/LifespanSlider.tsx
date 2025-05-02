@@ -28,7 +28,7 @@ export const LifespanSlider: React.FC<LifespanSliderProps> = ({
     const playWindUpSound = useSoundEffect('/audio/windup.mp3', { volume: otherUISound.isMuted ? 0 : otherUISound.volume, preload: true });
 
     useEffect(() => {
-        playWindUpSound.adjustVolume(otherUISound.volume);
+        playWindUpSound.adjustVolume(otherUISound.isMuted ? 0 : otherUISound.volume);
     }, [otherUISound]);
 
 

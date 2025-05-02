@@ -25,25 +25,25 @@ export default function ChatBox() {
     const playCloseSound = useSoundEffect('/audio/close.mp3', { volume: settings.otherUISound.isMuted ? 0 : settings.otherUISound.volume, preload: true });
 
     useEffect(() => {
-        playClickSound.adjustVolume(settings.buttonSound.volume);
+        playClickSound.adjustVolume(settings.buttonSound.isMuted ? 0 : settings.buttonSound.volume);
     }, [settings.buttonSound]);
 
     useEffect(() => {
-        playSwingSound.adjustVolume(settings.crankSound.volume);
+        playSwingSound.adjustVolume(settings.crankSound.isMuted ? 0 : settings.crankSound.volume);
         if (settings.crankSound.isMuted) {
             playSwingSound.stop();
         }
     }, [settings.crankSound]);
 
     useEffect(() => {
-        playPopUpSound.adjustVolume(settings.typingSound.volume);
+        playPopUpSound.adjustVolume(settings.typingSound.isMuted ? 0 : settings.typingSound.volume);
         if (settings.typingSound.isMuted) {
             playPopUpSound.stop();
         }
     }, [settings.typingSound]);
 
     useEffect(() => {
-        playCloseSound.adjustVolume(settings.otherUISound.volume);
+        playCloseSound.adjustVolume(settings.otherUISound.isMuted ? 0 : settings.otherUISound.volume);
         if (settings.otherUISound.isMuted) {
             playCloseSound.stop();
         }

@@ -35,11 +35,11 @@ export const InputWithShuffle: React.FC<InputWithShuffleProps> = ({
     const playClickSound = useSoundEffect('/audio/click.mp3', { volume: typingSound.isMuted ? 0 : typingSound.volume, preload: true });
 
     useEffect(() => {
-        playSwingSound.adjustVolume(buttonSound.volume);
+        playSwingSound.adjustVolume(buttonSound.isMuted ? 0 : buttonSound.volume);
     }, [buttonSound]);
 
     useEffect(() => {
-        playClickSound.adjustVolume(typingSound.volume);
+        playClickSound.adjustVolume(typingSound.isMuted ? 0 : typingSound.volume);
     }, [typingSound]);
 
 

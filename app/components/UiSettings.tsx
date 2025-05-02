@@ -34,11 +34,11 @@ export default function UiSettings() {
     });
 
     useEffect(() => {
-        playGlitchSound.adjustVolume(glitchSound.volume);
+        playGlitchSound.adjustVolume(glitchSound.isMuted ? 0 : glitchSound.volume);
     }, [glitchSound]);
 
     useEffect(() => {
-        playSound.adjustVolume(soundEffect.volume);
+        playSound.adjustVolume(soundEffect.isMuted ? 0 : soundEffect.volume);
     }, [soundEffect]);
 
     return (

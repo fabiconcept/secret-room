@@ -22,11 +22,11 @@ export default function MainSection() {
     const playSwingSound = useSoundEffect('/audio/swing.mp3', { volume: otherUISound.isMuted ? 0 : otherUISound.volume, preload: true });
 
     useEffect(() => {
-        playPressSound.adjustVolume(buttonSound.volume);
+        playPressSound.adjustVolume(buttonSound.isMuted ? 0 : buttonSound.volume);
     }, [buttonSound]);
 
     useEffect(() => {
-        playSwingSound.adjustVolume(otherUISound.volume);
+        playSwingSound.adjustVolume(otherUISound.isMuted ? 0 : otherUISound.volume);
     }, [otherUISound]);
 
     

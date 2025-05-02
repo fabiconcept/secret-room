@@ -15,7 +15,7 @@ export default function Header() {
     const playSwingSound = useSoundEffect('/audio/press.mp3', { volume: buttonSound.isMuted ? 0 : buttonSound.volume, preload: true });
 
     useEffect(() => {
-        playSwingSound.adjustVolume(buttonSound.volume);
+        playSwingSound.adjustVolume(buttonSound.isMuted ? 0 : buttonSound.volume);
     }, [buttonSound]);
 
     if (!server) return null;

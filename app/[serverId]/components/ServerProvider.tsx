@@ -60,19 +60,19 @@ export default function ServerProvider({ children, server }: ServerProviderProps
     });
 
     useEffect(() => {
-        playPopSound.adjustVolume(settings.buttonSound.volume);
+        playPopSound.adjustVolume(settings.buttonSound.isMuted ? 0 : settings.buttonSound.volume);
     }, [settings.buttonSound]);
 
     useEffect(() => {
-        playCreakingSound.adjustVolume(settings.crankSound.volume);
+        playCreakingSound.adjustVolume(settings.crankSound.isMuted ? 0 : settings.crankSound.volume);
     }, [settings.crankSound]);
 
     useEffect(() => {
-        playWoshSound.adjustVolume(settings.otherUISound.volume);
+        playWoshSound.adjustVolume(settings.otherUISound.isMuted ? 0 : settings.otherUISound.volume);
     }, [settings.otherUISound]);
 
     useEffect(() => {
-        playSeenSound.adjustVolume(settings.otherUISound.volume);
+        playSeenSound.adjustVolume(settings.otherUISound.isMuted ? 0 : settings.otherUISound.volume);
     }, [settings.otherUISound]);
 
     useEffect(() => {
