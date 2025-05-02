@@ -7,6 +7,7 @@ import { getUniqueFingerprint } from '@/utils';
 import { getItem, setItem } from '@/utils/localStorage';
 import { Auth } from '@/app/types/index.type';
 import TypeWriter from '@/app/components/TypeWriter';
+import GlitchController from '@/app/components/GlitchController';
 
 export default function UniqueInvitationPage() {
     const params = useParams();
@@ -92,6 +93,7 @@ export default function UniqueInvitationPage() {
     if (!status) {
         return (
             <div className="h-screen w-screen grid place-items-center relative z-10">
+                <GlitchController />
                 <div className="w-[clamp(20rem,100%,40rem)] p-10 bg-[#1a1a1a] rounded-xl">
                     <h1 className="text-3xl text-center">Loading...</h1>
                 </div>
@@ -105,6 +107,7 @@ export default function UniqueInvitationPage() {
                 <h1 className="text-3xl text-center glitch" data-text={status.message}>
                     {status.message}
                 </h1>
+                <GlitchController />
                 <TypeWriter
                     text={status.subMessage}
                     className={`${status.isError ? 'text-red-500' : 'text-green-500'} my-5 text-lg opacity-70 text-center animate-pulse glitch`}

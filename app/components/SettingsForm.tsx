@@ -5,20 +5,47 @@ import useSoundEffect from '@/utils/Hooks/useSoundEffect';
 import React, { useState } from 'react';
 import { FaVolumeHigh, FaVolumeXmark } from 'react-icons/fa6';
 import useSettingStore from '@/store/useSettingStore';
+import { useClickAway } from "react-use";
+import { useRef } from "react";
+import { useAppStore } from '@/store/useAppStore';
+import { rgbToHex } from '@/utils';
+
+const hexToRgb = (hex: string) => {
+    // Remove the hash if present
+    hex = hex.replace('#', '');
+    
+    // Convert to RGB values
+    const r = parseInt(hex.substring(0, 2), 16);
+    const g = parseInt(hex.substring(2, 4), 16);
+    const b = parseInt(hex.substring(4, 6), 16);
+    
+    return `${r}, ${g}, ${b}`;
+};
+
+
 
 export default function SettingsForm(): React.JSX.Element {
     const [activeTab, setActiveTab] = useState<'sound' | 'visual'>('sound');
     const settings = useSettingStore();
+    const { setUiSettings } = useAppStore();
+
     const playPressSound = useSoundEffect('/audio/press.mp3', { volume: 0.5, preload: true });
+
+    const containerRef = useRef<HTMLDivElement>(null);
+
+    useClickAway(containerRef, () => setUiSettings(false));
 
     const changeTab = (tab: 'sound' | 'visual') => {
         setActiveTab(tab);
         playPressSound.play();
     };
 
+    
+
     return (
         <div
             className="max-w-[400px] w-[calc(100dvw-7rem)] min-w-[300px] h-full bg-background/40 backdrop-blur-lg relative z-10 shadow-2xl border border-r-transparent border-green-400/20 rounded-3xl rounded-r-none overflow-hidden p-5 overflow-y-auto"
+            ref={containerRef}
         >
             {/* Tabs */}
             <div className="flex space-x-2 mb-4 mt-5">
@@ -83,11 +110,11 @@ export default function SettingsForm(): React.JSX.Element {
                         />
                     </div>
                     <div>
-                        <label className="text-sm text-gray-200 block mb-1">Matrix Color</label>
+                        <label className="text-sm text-gray-200 block mb-1">Matrix Color {settings.backgroundMatrix.color}</label>
                         <input
                             type="color"
-                            value={settings.backgroundMatrix.color}
-                            onChange={e => settings.updateBackgroundMatrix(e.target.value)}
+                            value={rgbToHex(settings.backgroundMatrix.color)}
+                            onChange={e => settings.updateBackgroundMatrix(hexToRgb(e.target.value))}
                             className="w-20 h-10 border rounded"
                         />
                     </div>

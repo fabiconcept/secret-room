@@ -9,6 +9,7 @@ import { getItem, setItem } from "@/utils/localStorage";
 import { redirect, useParams } from "next/navigation";
 import { ServerResponse } from "@/app/types/server.types";
 import Head from "next/head";
+import GlitchController from "../components/GlitchController";
 
 export default function Page() {
     const { serverId } = useParams();
@@ -23,38 +24,38 @@ export default function Page() {
                 token: ''
             };
             const auth = getItem<typeof authFallback>(serverId as string, authFallback);
-    
+
             try {
                 setIsLoading(true);
-    
+
                 if (!auth.userId || !auth.token) {
                     redirect('/');
                 }
-    
+
                 const { data: serverData } = await apiService.getServer(serverId as string, auth.userId, auth.token);
                 setServer(serverData);
             } catch (error) {
                 const errorMessage = error instanceof Error ? error.message : 'Failed to fetch server';
                 if (errorMessage.toLowerCase().includes('token has expired')) {
                     try {
-                        const refreshTokenData = await apiService.refreshToken({ 
-                            userId: auth.userId, 
-                            serverId: serverId as string 
+                        const refreshTokenData = await apiService.refreshToken({
+                            userId: auth.userId,
+                            serverId: serverId as string
                         });
-                        
+
                         if (refreshTokenData?.token) {
                             setItem(serverId as string, {
                                 userId: auth.userId,
                                 token: refreshTokenData.token
                             });
-                            
+
                             // Make a new request with updated token instead of recursion
                             const { data: serverData } = await apiService.getServer(
-                                serverId as string, 
-                                auth.userId, 
+                                serverId as string,
+                                auth.userId,
                                 refreshTokenData.token
                             );
-                            
+
                             setServer(serverData);
                             return; // Exit the error handler after successful recovery
                         } else {
@@ -67,7 +68,7 @@ export default function Page() {
                         setTimeout(() => {
                             redirect('/');
                         }, 3000);
-                        
+
                         throw refreshError;
                     }
                 }
@@ -79,7 +80,7 @@ export default function Page() {
                 setIsLoading(false);
             }
         };
-    
+
         if (serverId) {
             fetchServer();
         }
@@ -88,6 +89,7 @@ export default function Page() {
     if (isLoading) {
         return (
             <div className="h-screen w-screen grid place-items-center">
+                <GlitchController />
                 <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
             </div>
         );
@@ -100,6 +102,7 @@ export default function Page() {
                     <h1 className="text-xl text-center glitch" data-text={"Something went wrong."}>
                         Oops! An error has occurred.
                     </h1>
+                    <GlitchController />
                     <TypeWriter
                         text={`${error}\n\nRedirecting to home...`}
                         className="text-red-500 my-5 text-lg opacity-70 text-center animate-pulse glitch"
@@ -115,9 +118,10 @@ export default function Page() {
     return (
         <>
             <ServerProvider server={server}>
-            <Head>
-        <title>{server.server_name} Secret Room — Live Server</title>
-      </Head>
+                <Head>
+                    <title>{server.server_name} Secret Room — Live Server</title>
+                </Head>
+                <GlitchController />
                 <div className="grid place-items-center min-h-dvh w-screen">
                     <div
                         className="h-dvh w-screen sm:rounded-3xl overflow-hidden border border-gray-500/20 sm:max-h-[calc(100vh-20px)] sm:max-w-[calc(100vw-20px)]">

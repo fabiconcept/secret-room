@@ -7,15 +7,10 @@ import { useAppStore } from '@/store/useAppStore';
 import clsx from 'clsx';
 import { FaGear } from 'react-icons/fa6';
 import SettingsForm from './SettingsForm';
-import { useClickAway } from "react-use";
-import { useRef } from "react";
 
 export default function UiSettings() {
     const settings = useSettingStore();
     const { uiSettings, setUiSettings } = useAppStore();
-    const containerRef = useRef<HTMLDivElement>(null);
-
-    useClickAway(containerRef, () => setUiSettings(false));
 
 
     const { soundEffect, glitchSound } = settings;
@@ -52,7 +47,7 @@ export default function UiSettings() {
             uiSettings ? 'translate-x-0' : 'translate-x-full'
         )}>
             <div 
-                ref={containerRef}
+                
                 className='absolute top-1/2 group transform -left-[50px] active:translate-x-2 active:-rotate-3 w-fit -translate-y-1/2 h-fit cursor-pointer origin-right'
                 onClick={() => setUiSettings(!uiSettings)}
             >

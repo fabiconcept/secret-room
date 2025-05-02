@@ -539,3 +539,83 @@ export const downloadHandler = async (contentUrl: string, customFilename?: strin
         throw error;
     }
 };
+
+// Helper functions
+const toHex = (n: number): string => n.toString(16).padStart(2, '0');
+const clamp = (value: number, min: number, max: number): number => Math.max(min, Math.min(max, value));
+
+/**
+ * Converts various RGB color formats to hexadecimal representation
+ * 
+ * Supports:
+ * - rgb(255, 255, 255)
+ * - 255, 255, 255
+ * - rgb(255 255 255)
+ * - RGB with percentages: rgb(100%, 50%, 30%)
+ * - RGBA formats with alpha channel (alpha is ignored in hex output)
+ * 
+ * @param {string} rgb - RGB color string in various formats
+ * @returns {string} Hexadecimal color representation, defaults to #0aff0a if input is invalid
+ */
+export const rgbToHex = (rgb: string): string => {
+    // Default fallback color (10, 255, 10) = #0aff0a
+    const DEFAULT_R = 10;
+    const DEFAULT_G = 255;
+    const DEFAULT_B = 10;
+    
+    try {
+        // Handle empty or non-string input
+        if (!rgb || typeof rgb !== 'string') {
+            return `#${toHex(DEFAULT_R)}${toHex(DEFAULT_G)}${toHex(DEFAULT_B)}`;
+        }
+        
+        // Remove rgb(), rgba() wrappers and extract values
+        const values = rgb
+            .replace(/^(rgb|rgba)\(|\)$/gi, '') // Remove rgb/rgba wrapper
+            .split(/[\s,]+/)                     // Split by whitespace or commas
+            .filter(val => val !== '');          // Remove empty strings
+        
+        // If we don't have at least 3 values, use default
+        if (values.length < 3) {
+            return `#${toHex(DEFAULT_R)}${toHex(DEFAULT_G)}${toHex(DEFAULT_B)}`;
+        }
+        
+        // Process RGB values (handle percentages and clamp to valid range)
+        let r = DEFAULT_R;
+        let g = DEFAULT_G;
+        let b = DEFAULT_B;
+        
+        // Try to parse r value
+        if (values[0].includes('%')) {
+            const percent = parseFloat(values[0]);
+            r = !isNaN(percent) ? clamp(Math.round(percent * 255 / 100), 0, 255) : DEFAULT_R;
+        } else {
+            const num = parseInt(values[0], 10);
+            r = !isNaN(num) ? clamp(num, 0, 255) : DEFAULT_R;
+        }
+        
+        // Try to parse g value
+        if (values[1].includes('%')) {
+            const percent = parseFloat(values[1]);
+            g = !isNaN(percent) ? clamp(Math.round(percent * 255 / 100), 0, 255) : DEFAULT_G;
+        } else {
+            const num = parseInt(values[1], 10);
+            g = !isNaN(num) ? clamp(num, 0, 255) : DEFAULT_G;
+        }
+        
+        // Try to parse b value
+        if (values[2].includes('%')) {
+            const percent = parseFloat(values[2]);
+            b = !isNaN(percent) ? clamp(Math.round(percent * 255 / 100), 0, 255) : DEFAULT_B;
+        } else {
+            const num = parseInt(values[2], 10);
+            b = !isNaN(num) ? clamp(num, 0, 255) : DEFAULT_B;
+        }
+        
+        // Convert to hex and pad with zeros if needed
+        return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+    } catch (error) {
+        // Return default color if any error occurs
+        return `#${toHex(DEFAULT_R)}${toHex(DEFAULT_G)}${toHex(DEFAULT_B)}`;
+    }
+};

@@ -16,7 +16,7 @@ const initialState: SettingState = {
     otherUISound: { volume: 0.5, isMuted: false },
     backgroundMatrix: {
         color: '10, 255, 10',
-        opacity: 0.5
+        opacity: 0.05
     }
 };
 
@@ -29,7 +29,7 @@ const useSettingStore = create<SettingState & {
     updateVolume: (key: SoundControlKey, volume: number) => void;
     setGlitchEffect: (enabled: boolean) => void;
     updateBackgroundMatrix: (color?: string, opacity?: number) => void;
-}>((set, get) => {
+}>((set) => {
     const persistState = (state: SettingState) => {
         if (state.filledFrom === 'local') {
             setItem(STORAGE_KEY, state);
