@@ -74,7 +74,7 @@ export default function UserCard({ userId, username, isOnline, bgColor, textColo
                     <div className={`absolute bottom-1 right-1 w-3 h-3 rounded-full border-2 border-black/20 ${isOnline ? 'bg-green-500' : 'bg-gray-500'}`} />
                 </div>
                 <div className="flex-1 grid gap-1">
-                    <h3 className="text-white font-semibold capitalize">{username}</h3>
+                    <h3 className="text-white text-xl truncate font-semibold capitalize">{username}</h3>
                     <p className={clsx("text-sm w-[90%] truncate", typingUsers.includes(userId) ? "text-orange-400 animate-pulse" : lastMessage?.senderId === server.owner ? "text-gray-400 italic" : (lastMessage?.readByReceiver === false ? "text-white" : "text-gray-400"))}>
                         {typingUsers.includes(userId) ? 'Typing...' : lastMessage ? (lastMessage.senderId === server.owner ? 'You: ' : '') + (lastMessage.content.length > 20 ? `${lastMessage.content.slice(0, 20)}...` : lastMessage.content) : 'No messages yet.'}
                     </p>
