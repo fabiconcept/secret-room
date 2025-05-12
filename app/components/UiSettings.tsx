@@ -48,7 +48,7 @@ export default function UiSettings() {
         )}>
             <div 
                 
-                className='absolute top-1/2 group transform -left-[50px] active:translate-x-2 active:-rotate-3 w-fit -translate-y-1/2 h-fit cursor-pointer origin-right'
+                className='absolute top-1/2 group transform -left-[50px] active:translate-x-2 active:-rotate-3 w-fit -translate-y-1/2 h-fit cursor-pointer origin-right hover:opacity-100 opacity-50 hover:delay-500'
                 onClick={() => setUiSettings(!uiSettings)}
             >
                 <FaGear className={clsx('text-2xl drop-shadow-lg animate-spin z-20 relative', uiSettings ? 'text-green-400' : 'group-hover:text-green-400')}/>

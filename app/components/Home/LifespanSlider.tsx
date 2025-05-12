@@ -2,6 +2,7 @@
 
 import useSettingStore from '@/store/useSettingStore';
 import useSoundEffect from '@/utils/Hooks/useSoundEffect';
+import clsx from 'clsx';
 import React, { useState, useEffect, useCallback } from 'react';
 import { FaSkull } from 'react-icons/fa6';
 
@@ -98,7 +99,10 @@ export const LifespanSlider: React.FC<LifespanSliderProps> = ({
     };
 
     return (
-        <div className="relative mt-8 pb-12">
+        <div className={clsx(
+            "relative mt-8 pb-12",
+            "has-active:select-none"
+        )}>
             <label className='text-sm text-gray-300 flex items-center gap-2'>
                 Server Lifespan <span data-text={'*'} className='text-red-500 glitch'>*</span>
                 <FaSkull className="text-gray-500" />
@@ -106,7 +110,7 @@ export const LifespanSlider: React.FC<LifespanSliderProps> = ({
 
             <div
                 id="lifespan-slider"
-                className="mt-5 h-2 bg-gray-700 rounded-full relative cursor-pointer"
+                className="mt-5 h-2 bg-gray-700 rounded-l-full relative cursor-pointer"
                 onClick={handleSliderClick}
                 onMouseDown={() => setIsDragging(true)}
             >

@@ -33,7 +33,6 @@ const useSettingStore = create<SettingState & {
     const persistState = (state: SettingState) => {
         if (state.filledFrom === 'local') {
             setItem(STORAGE_KEY, state);
-            console.log('Settings persisted:', state);
         }
     };
 
@@ -44,7 +43,6 @@ const useSettingStore = create<SettingState & {
             const savedState = getItem<SettingState>(STORAGE_KEY, initialState);
             const updatedState = { ...savedState, filledFrom: 'local' as const };
             set(updatedState);
-            console.log('Settings initialized:', updatedState);
         },
 
         updateSoundControl: (key, control) => {

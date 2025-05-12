@@ -75,6 +75,13 @@ export default function ServerProvider({ children, server }: ServerProviderProps
         playSeenSound.adjustVolume(settings.otherUISound.isMuted ? 0 : settings.otherUISound.volume);
     }, [settings.otherUISound]);
 
+    // before page unmount
+    useEffect(() => {
+        return () => {
+            clearServer();
+        };
+    }, []);
+
     useEffect(() => {
         const initializeServerState = async () => {
             playCreakingSound.play();

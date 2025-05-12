@@ -131,7 +131,7 @@ export default function Form() {
     }
 
     return (
-        <div className='rounded-2xl bg-[#1a1a1a] p-8 sm:w-md w-full'>
+        <div className='rounded-2xl bg-[#1a1a1a] p-8 sm:w-md w-full border border-gray-500/20'>
             <h1 data-text="Leave this place" className='text-2xl w-[15rem] text-gray-400 glitch font-semibold text-center mx-auto mb-6'>
                 Create a Server
             </h1>

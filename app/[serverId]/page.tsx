@@ -124,7 +124,7 @@ export default function Page() {
                 <GlitchController />
                 <div className="grid place-items-center min-h-dvh w-screen">
                     <div
-                        className="h-dvh w-screen sm:rounded-3xl overflow-hidden border border-gray-500/20 sm:max-h-[calc(100vh-20px)] sm:max-w-[calc(100vw-20px)]">
+                        className="h-[99dvh] w-screen max-w-[100rem] sm:rounded-lg overflow-hidden border border-gray-500/40 sm:h-[calc(100vh-20px)] sm:w-[calc(100vw-20px)]">
                         <ChatSection />
                     </div>
                 </div>

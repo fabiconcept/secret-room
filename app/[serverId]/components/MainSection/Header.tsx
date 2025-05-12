@@ -7,6 +7,13 @@ import { formatLastSeen } from "@/utils";
 import useSoundEffect from "@/utils/Hooks/useSoundEffect";
 import useSettingStore from "@/store/useSettingStore";
 import { useEffect } from "react";
+import { Kaushan_Script } from "next/font/google";
+
+const kaushanScript = Kaushan_Script({
+    subsets: ['latin'],
+    weight: ['400'],
+    variable: '--font-kaushan-script',
+});
 
 export default function Header() {
     const { currentlyChatting, server, isOwner, removeCurrentlyChatting, typingUsers } = useServerStore();
@@ -74,7 +81,7 @@ export default function Header() {
                         "w-full p-5 text-center text-white text-xl font-semibold",
                     )}
                 >
-                    <span className="text-gray-400 text-sm font-medium">Current Server: </span><span className="glitch" data-text={`${server?.server_name}`}>{server?.server_name}</span>
+                    <span className="text-gray-400 text-sm font-medium">Current Server: </span><span className={clsx("glitch text-2xl", kaushanScript.className)} data-text={`${server?.server_name}`}>{server?.server_name}</span>
                 </header>
             </div>}
         </div>

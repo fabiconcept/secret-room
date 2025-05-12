@@ -1,17 +1,19 @@
-import { Geist, Geist_Mono } from "next/font/google";
+import { Montserrat } from "next/font/google";
 import "./styles/globals.css";
 import { SocketProvider } from "@/app/components/contexts/SocketContext";
 import HomeBackground from "./components/HomeBackground";
-import SoundTrack from "./components/UiSettings";
+import UiSettings from "./components/UiSettings";
 import { Toaster } from "react-hot-toast";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const montserrat = Montserrat({
+  variable: "--font-montserrat",
+  weight: ['400', '500', '600', '700', '800', '900'],
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const montserratMono = Montserrat({
+  variable: "--font-montserrat-mono",
+  weight: ['400', '500', '600', '700', '800', '900'],
   subsets: ["latin"],
 });
 
@@ -23,7 +25,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${montserrat.variable} ${montserratMono.variable} antialiased`}
       >
         <Toaster
           position="top-center"
@@ -34,7 +36,7 @@ export default function RootLayout({
         />
         <div className="bg absolute h-screen w-screen top-0 left-0"></div>
         <HomeBackground />
-        <SoundTrack />
+        <UiSettings />
         <SocketProvider>
           {children}
         </SocketProvider>

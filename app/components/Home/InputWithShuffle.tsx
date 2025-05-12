@@ -67,7 +67,7 @@ export const InputWithShuffle: React.FC<InputWithShuffleProps> = ({
                         onShuffle()
                     }}
                     title={`Generate a new ${label.toLowerCase()}`}
-                    className="mt-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-200 rounded-lg cursor-pointer active:scale-95 group"
+                    className="mt-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-200 rounded-lg cursor-pointer active:scale-95 group border border-gray-500/20"
                 >
                     <FaShuffle className='group-active:rotate-12' />
                 </button>

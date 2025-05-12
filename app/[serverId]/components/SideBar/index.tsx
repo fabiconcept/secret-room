@@ -1,5 +1,6 @@
 "use client";
 
+import { Kaushan_Script } from "next/font/google";
 import { useServerStore } from "@/store/useServerStore";
 import UserCard from "./UserCard";
 import { performCopy } from "@/utils";
@@ -13,6 +14,12 @@ import { useEffect } from "react";
 import { FaCopy } from "react-icons/fa6";
 import useSoundEffect from "@/utils/Hooks/useSoundEffect";
 import useSettingStore from "@/store/useSettingStore";
+
+const kaushanScript = Kaushan_Script({
+    subsets: ['latin'],
+    weight: ['400'],
+    variable: '--font-kaushan-script',
+});
 
 
 export default function SideBar() {
@@ -79,7 +86,7 @@ export default function SideBar() {
         <section className="relative">
             <section
                 className={clsx(
-                    "flex overflow-hidden flex-col h-full bg-black/20 border-r border-b border-white/10",
+                    "flex overflow-hidden flex-col h-full bg-black/40 border-r border-gray-500/40",
                     sideBarExpanded ? "w-[clamp(20rem,100%,25rem)] max-sm:w-full" : "w-0"
                 )}
             >
@@ -87,12 +94,13 @@ export default function SideBar() {
                     <div className="">
                         <header
                             className={clsx(
-                                "w-full p-5 text-center text-white border-b border-gray-500/20 text-xl font-semibold bg-black/5 backdrop-blur-[2px]",
+                                "w-full p-8 text-center text-white border-b border-gray-500/40 text-3xl font-semibold bg-black/5 backdrop-blur-[2px]",
+                                kaushanScript.className
                             )}
                         >
                             <span className="glitch" data-text={`${server?.server_name}`}>{server?.server_name}</span>
                         </header>
-                        <div className="py-1">
+                        <div className="">
                             {sortedUsers.map((user) => {
                                 if (isOwner) {
                                     return (<UserCard
