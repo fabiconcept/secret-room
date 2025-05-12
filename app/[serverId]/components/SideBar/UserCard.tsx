@@ -57,7 +57,7 @@ export default function UserCard({ userId, username, isOnline, bgColor, textColo
         <div className=''>
             <div onClick={handleSetCurrentlyChatting} className={clsx(
                 "flex items-center gap-3 px-4 py-3 border-y border-gray-500/20 bg-white/2 hover:bg-white/5 transition-colors cursor-pointer relative",
-                lastMessage?.readByReceiver === false ? "bg-white/10 after:absolute after:top-1/2 after:-translate-y-1/2 after:right-2 after:h-1.5 after:w-1.5 after:bg-blue-500/80 after:rounded-lg after:shadow-2xl" : ""
+                lastMessage?.senderId === server.owner ? "" : (lastMessage?.readByReceiver === false ? "bg-white/10 after:absolute after:top-1/2 after:-translate-y-1/2 after:right-2 after:h-1.5 after:w-1.5 after:bg-blue-500/80 after:rounded-lg after:shadow-2xl" : "")
             )}>
                 <div className="relative">
                     <div
