@@ -219,6 +219,7 @@ export default function ServerProvider({ children, server }: ServerProviderProps
         return () => {
             socketService.disconnect(server_id);
             socketService.removeAllListeners();
+            socketService.disconnect(server_id);
             clearServer();
         };
     }, [server, server_id]);
