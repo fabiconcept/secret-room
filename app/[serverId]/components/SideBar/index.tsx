@@ -90,30 +90,18 @@ export default function SideBar() {
                     sideBarExpanded ? "w-[clamp(20rem,100%,25rem)] max-sm:w-full" : "w-0"
                 )}
             >
-                <div className="flex-1 w-full overflow-y-auto bg-white/5">
+                <div className="flex-1 w-full overflow-y-auto relative bg-white/5">
+                    <header
+                        className={clsx(
+                            "w-full p-8 text-center sticky top-0 z-[100] text-white border-b border-gray-500/40 text-3xl font-semibold bg-black/5 backdrop-blur-[2px]",
+                            kaushanScript.className
+                        )}
+                    >
+                        <span className="glitch" data-text={`${server?.server_name}`}>{server?.server_name}</span>
+                    </header>
                     <div className="">
-                        <header
-                            className={clsx(
-                                "w-full p-8 text-center text-white border-b border-gray-500/40 text-3xl font-semibold bg-black/5 backdrop-blur-[2px]",
-                                kaushanScript.className
-                            )}
-                        >
-                            <span className="glitch" data-text={`${server?.server_name}`}>{server?.server_name}</span>
-                        </header>
-                        <div className="">
-                            {sortedUsers.map((user) => {
-                                if (isOwner) {
-                                    return (<UserCard
-                                        key={user.userId}
-                                        userId={user.userId}
-                                        username={user.username}
-                                        isOnline={user.isOnline}
-                                        lastSeen={user.lastSeen}
-                                        bgColor={user.bgColor}
-                                        textColor={user.textColor}
-                                    />)
-                                }
-                                if (user.userId !== server.owner) return null;
+                        {sortedUsers.map((user) => {
+                            if (isOwner) {
                                 return (<UserCard
                                     key={user.userId}
                                     userId={user.userId}
@@ -124,8 +112,18 @@ export default function SideBar() {
                                     textColor={user.textColor}
                                 />)
                             }
-                            )}
-                        </div>
+                            if (user.userId !== server.owner) return null;
+                            return (<UserCard
+                                key={user.userId}
+                                userId={user.userId}
+                                username={user.username}
+                                isOnline={user.isOnline}
+                                lastSeen={user.lastSeen}
+                                bgColor={user.bgColor}
+                                textColor={user.textColor}
+                            />)
+                        }
+                        )}
                     </div>
                 </div>
                 {isOwner && <footer className="w-full p-5 text-center text-white text-sm flex items-center gap-3 border-b border-gray-500/20 bg-black/5 backdrop-blur-[2px]">
