@@ -16,6 +16,7 @@ interface InputWithShuffleProps {
     onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
     hint?: React.ReactNode;
     disabled?: boolean;
+    maxLength?: number;
 }
 
 export const InputWithShuffle: React.FC<InputWithShuffleProps> = ({
@@ -28,7 +29,8 @@ export const InputWithShuffle: React.FC<InputWithShuffleProps> = ({
     className = '',
     onKeyDown,
     disabled,
-    hint
+    hint,
+    maxLength
 }) => {
     const { buttonSound, typingSound } = useSettingStore();
     const playSwingSound = useSoundEffect('/audio/press.mp3', { volume: buttonSound.isMuted ? 0 : buttonSound.volume, preload: true });
@@ -59,6 +61,7 @@ export const InputWithShuffle: React.FC<InputWithShuffleProps> = ({
                     onKeyDown={onKeyDown}
                     placeholder={placeholder}
                     disabled={disabled}
+                    maxLength={maxLength}
                     className={`w-full bg-[#2b2b2b] mt-2 text-gray-200 p-3 rounded-lg border border-gray-700 focus:border-gray-500 focus:outline-none transition-colors ${className}`}
                 />
                 <button

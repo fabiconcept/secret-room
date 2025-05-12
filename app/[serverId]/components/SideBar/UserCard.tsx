@@ -62,7 +62,7 @@ export default function UserCard({ userId, username, isOnline, bgColor, textColo
                 <div className="relative">
                     <div
                         className={clsx(
-                            "w-16 border-2 border-gray-500/50 h-16 rounded-full flex items-center justify-center text-xl font-semibold",
+                            "w-16 border-2 border-gray-500/50 h-16 rounded-full flex items-center justify-center text-lg font-semibold",
                         )}
                         style={{
                             backgroundColor: bgColor,

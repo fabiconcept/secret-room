@@ -155,13 +155,14 @@ export default function Form() {
                     placeholder={placeholderName}
                     onKeyDown={handleKeyDown}
                     hint={serverNameHint}
+                    maxLength={24}
                 />
 
                 <InputWithShuffle
                     id="encryption-key"
                     label="Encryption Key"
                     value={encryptionKey}
-                    onChange={setEncryptionKey}
+                    onChange={()=>{}}
                     onShuffle={generateNewKey}
                     disabled
                     placeholder="Click generate to create a secure key"
