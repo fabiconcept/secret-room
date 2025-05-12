@@ -93,7 +93,7 @@ export default function SideBar() {
                 <div className="flex-1 w-full overflow-y-auto relative bg-white/5">
                     <header
                         className={clsx(
-                            "w-full p-8 text-center sticky top-0 z-[100] text-white border-b border-gray-500/40 text-3xl font-semibold bg-black/10 backdrop-blur-[5px]",
+                            "w-full p-8 text-center sticky top-0 z-[100] text-white border-b border-gray-500/40 text-3xl font-semibold bg-black/10 backdrop-blur-[12px]",
                             kaushanScript.className
                         )}
                     >
