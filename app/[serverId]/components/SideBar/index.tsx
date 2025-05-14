@@ -100,7 +100,7 @@ export default function SideBar() {
                         <span className="glitch" data-text={`${server?.server_name}`}>{server?.server_name}</span>
                     </header>
                     <div className="">
-                        {sortedUsers.map((user) => {
+                        {sortedUsers.length > 0 && sortedUsers.map((user) => {
                             if (isOwner) {
                                 return (<UserCard
                                     key={user.userId}
@@ -124,6 +124,9 @@ export default function SideBar() {
                             />)
                         }
                         )}
+                        {sortedUsers.length === 0 && <p className="text-gray-400 text-center text-sm p-7">
+                            Invite users to join your server
+                        </p>}
                     </div>
                 </div>
                 {isOwner && <footer className="w-full p-5 text-center text-white text-sm flex items-center gap-3 border-b border-gray-500/20 bg-black/5 backdrop-blur-[2px]">
